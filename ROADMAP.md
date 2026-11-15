@@ -35,7 +35,7 @@ Small, agreed steps. Status: ✅ done · ⏭️ current · (blank) planned.
 | 1.1 | Discussion: home print mechanics — A4 duplex, fold, A5 vs A6, page order, multiple of 4 | ✅ |
 | 1.2 | Discussion: page model → true A6 with physical margins (option C), see `docs/printing.md` | ✅ |
 | 1.3 | `lib/formats.typ` (`a6-home`) + docs diagrams + `booklets/format-test`                  | ✅ |
-| 1.4 | Print `format-test` (`task print -- format-test`): measure dead zone, check page order/flip, specimen checklist | ⏭️ |
+| 1.4 | Print `format-test`: dead zone ≈ 4 mm sides, ≈ 2.5 mm bottom (inside our 5 / 6.75 mm margins, no change); found 3 mm vertical duplex offset → 5.3 | ✅ |
 
 ## Phase 2 — The library
 
@@ -46,37 +46,35 @@ Small, agreed steps. Status: ✅ done · ⏭️ current · (blank) planned.
 | 2.3 | `lib/style.typ` (black-only library): font roles (Literata / Literata 7pt), named sizes, line weights + dashes (`pen`), grid steps (5, 3.55), dot sizes, `dots`/`lines`/`squares` utilities | ✅ |
 | 2.4 | `lib/lib.typ`: single entry point                                                      | ✅ |
 | 2.5 | `format-test` → 12-page print specimen: grid kinds/steps, dot sizes, lines/dashes/grey, tables, fonts, text on grid rows, spread across the fold | ✅ |
-| 2.6 | After printing the specimen: per-grid base text sizes (+ role sizes derived from them), grey yes/no | needs print (1.4) |
+| 2.6 | After printing the specimen: per-grid base text sizes (+ role sizes derived from them), grey yes/no | needs print (1.4); future work |
 
-## Phase 3 — Components
+## Phase 3 — First real booklet
+
+The real booklet stress-tests Typst with the actual design ideas. Components are built when it needs them,
+locally first (see README → Components).
 
 | #   | Step                                                          | Status |
 |-----|---------------------------------------------------------------|--------|
-| 3.1 | `gallery/`: preview page rendering components in isolation    | |
-| 3.2 | First component (e.g. month calendar)                         | |
-| 3.3 | More components as designs need them                          | |
+| 3.1 | Choose the first booklet and sketch its spreads               | ⏭️ |
+| 3.2 | `booklets/<name>/` with its own `components.typ` / `style.typ` as needed | |
+| 3.3 | Print, fold, review, iterate                                  | |
+| 3.4 | Promote a component to `lib/components/` only when a second booklet needs it | later |
 
-## Phase 4 — Data
+## Phase 4 — Data (when a booklet needs it)
 
 | #   | Step                                                          | Status |
 |-----|---------------------------------------------------------------|--------|
 | 4.1 | Root `pyproject.toml` (uv), `tools/booklet_tools/` package    | |
 | 4.2 | Holidays generator → `data/public/`, `task data`              | |
-| 4.3 | Load JSON in Typst, show in calendar component                | |
+| 4.3 | Load JSON in Typst, use it in the booklet                     | |
 
-## Phase 5 — First real booklet
-
-| #   | Step                                                          | Status |
-|-----|---------------------------------------------------------------|--------|
-| 5.1 | `booklets/<name>/` with `config.toml`: library + data + format | |
-| 5.2 | Print, fold, review, iterate                                  | |
-
-## Phase 6 — Imposition
+## Phase 5 — Imposition
 
 | #   | Step                                                          | Status |
 |-----|---------------------------------------------------------------|--------|
-| 6.1 | Typst-level imposition (`lib/impose.typ`), cut and stack, 4 pages per A4 side (chosen over pdfjam: no TeX, geometry from the format) | ✅ (done early, needed for 1.4) |
-| 6.2 | `task print -- <booklet>` → `build/<booklet>-print.pdf`, page count read from the template | ✅ |
+| 5.1 | Typst-level imposition (`lib/impose.typ`), cut and stack, 4 pages per A4 side (chosen over pdfjam: no TeX, geometry from the format) | ✅ (done early, needed for 1.4) |
+| 5.2 | `task print -- <booklet>` → `build/<booklet>-print.pdf`, page count read from the template | ✅ |
+| 5.3 | Duplex offset (back printed 3 mm higher): printer profile `lib/printers.typ` with `back-shift: 3mm`, applied by `task print`. **Verify with a test print**: front/back frames aligned → done; still off or varies between sheets → open an engineering investigation (measure several sheets/trays, check print dialog scaling, consider a calibration sheet) | ⏭️ |
 
 ## Later / open
 

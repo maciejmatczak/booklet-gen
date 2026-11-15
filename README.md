@@ -17,7 +17,6 @@ task preview -- format-test
 | `lib/`          | Shared Typst library: formats, template, style (`lib.typ` imports all) |
 | `lib/components/` | Reusable design components                                   |
 | `booklets/`     | Concrete booklets — one folder each, fixed physical format     |
-| `gallery/`      | Preview documents that render components in isolation          |
 | `data/public/`  | Generated data, committed (e.g. holidays JSON)                 |
 | `data/private/` | Personal data, gitignored (e.g. calendar exports)              |
 | `tools/`        | Python helpers that generate data                              |
@@ -26,6 +25,19 @@ task preview -- format-test
 | `docs/`         | Long-term notes: printing, formats, decisions                  |
 
 ## Conventions
+
+### Components
+
+| Where                               | What                                                            |
+|-------------------------------------|-----------------------------------------------------------------|
+| `booklets/<name>/components.typ`    | The booklet's own pieces. **Default: start here.** (Grows into a `components/` folder if needed.) |
+| `booklets/<name>/style.typ`         | The booklet's own styles, on top of `lib/style.typ`.             |
+| `lib/components/`                   | Shared pieces, **only once a second booklet needs one** (promote on second use). |
+
+`lib/style.typ` holds primitives (line weights, dashes, dot sizes, grid steps, font roles, grid fills);
+components are composed, meaningful pieces built from them (week table, month calendar, …).
+
+### General
 
 - Typst is always run with the repo root as `--root`, so imports use
   root-relative paths: `#import "/lib/lib.typ": *`, `json("/data/public/…")`.

@@ -63,6 +63,20 @@ Page order on small sheet *k* (1 = outermost) of an *N*-page booklet: front `N�
 The top halves of the A4 sheets carry small sheets 1…A, the bottom halves the rest (A = number of A4 sheets).
 If N isn't a multiple of 8, the last bottom half stays empty.
 
+### Printer calibration
+
+Duplex printers don't place the back side exactly behind the front. Our printer prints the back **3 mm higher**
+than the front (vertical only; left-right is exact). That comes from the paper path: the back is printed from the
+other end of the sheet, so a small registration error shows up doubled.
+
+The fix lives in a **printer profile** (`lib/printers.typ`), not in the format: page design never sees it.
+`task print` moves every back side by the profile's `back-shift` (positive = down), clipped to each quarter,
+cut/fold marks included. The default profile is the Brother DCP-L2532DW (`back-shift: 3mm`).
+
+To re-measure: on one leaf, hold a front page and the page behind it upright (e.g. against light) and compare their
+working-area frames. If the back is *X* mm higher, set `back-shift: X mm` (lower: negative). Another printer gets
+its own profile: `typst compile … --input printer=<key>`.
+
 Imposition is plain Typst: each booklet page is exactly one A4 quarter, so pages are placed 1:1 with no scaling.
 The booklet template records its page count (`<booklet-pages>`), which `task print` reads with `typst eval`.
 
@@ -187,7 +201,8 @@ about 8–10 sheets (32–40 pages). It can be fixed by trimming after binding.
 
 ## Open questions
 
-- Our printer's real dead zone, in mm: measure with `booklets/format-test` (rulers), then update `lib/formats.typ`.
+- Dead zone: measured ≈ 4 mm left/right, ≈ 2.5 mm bottom (first print, 2026-11-15). Inside our margins, so `dead-zone: 5mm` stays.
+- Duplex offset: `back-shift: 3mm` to be verified by a test print (ROADMAP 5.3).
 - Trim or not: optional finishing step, decide after holding a real booklet.
 - A6 imposition variant: two copies vs. cut-and-stack (leaning: cut-and-stack).
 

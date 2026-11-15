@@ -7,6 +7,7 @@
 // on the pile of bottom halves, fold each half, nest in order.
 // Background: docs/printing.md
 #import "formats.typ": a6-home
+#import "printers.typ": default-printer
 
 // Sheet sides in print order. Each side: (top: (left, right), bottom: (left, right) or none).
 // n: page count, a multiple of 4.
@@ -41,18 +42,23 @@
 }
 
 // pdf: bytes of the booklet PDF; n: its page count.
-#let impose(pdf, n, format: a6-home, marks: true) = {
+// printer: calibration profile (printers.typ); its back-shift moves back sides vertically.
+#let impose(pdf, n, format: a6-home, printer: default-printer, marks: true) = {
   let (width: pw, height: ph) = format.page
   set page(width: format.sheet.width, height: format.sheet.height, margin: 0pt)
-  let put(x, y, p) = place(dx: x, dy: y, image(pdf, page: p, width: pw, height: ph))
+  // Each page is clipped to its own quarter, so a shift never spills over the cut.
+  let put(x, y, p, shift) = place(dx: x, dy: y, box(width: pw, height: ph, clip: true,
+    place(dy: shift, image(pdf, page: p, width: pw, height: ph))))
   for (i, side) in cut-stack-order(n).enumerate() {
     if i > 0 { pagebreak() }
+    let shift = if calc.odd(i) { printer.back-shift } else { 0mm } // sides alternate front, back
     for (row, pair) in ((0, side.top), (1, side.bottom)) {
       if pair != none {
-        put(0mm, row * ph, pair.at(0))
-        put(pw, row * ph, pair.at(1))
+        put(0mm, row * ph, pair.at(0), shift)
+        put(pw, row * ph, pair.at(1), shift)
       }
     }
-    if marks { _marks(format) }
+    // marks move with the side, so front and back marks land on the same spot of paper
+    if marks { place(dy: shift, box(_marks(format))) }
   }
 }
