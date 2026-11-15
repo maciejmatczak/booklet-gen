@@ -74,7 +74,7 @@ locally first (see README → Components).
 |-----|---------------------------------------------------------------|--------|
 | 5.1 | Typst-level imposition (`lib/impose.typ`), cut and stack, 4 pages per A4 side (chosen over pdfjam: no TeX, geometry from the format) | ✅ (done early, needed for 1.4) |
 | 5.2 | `task print -- <booklet>` → `build/<booklet>-print.pdf`, page count read from the template | ✅ |
-| 5.3 | Duplex offset (back printed 3 mm higher): printer profile `lib/printers.typ` with `back-shift: 3mm`, applied by `task print`. **Verify with a test print**: front/back frames aligned → done; still off or varies between sheets → open an engineering investigation (measure several sheets/trays, check print dialog scaling, consider a calibration sheet) | ⏭️ |
+| 5.3 | Duplex offset (back printed 3 mm higher): measured with `task calibration`, **fixed in the printer** (maintenance 45, Y Adjust DX = −30); `back-shift` back to 0 mm. Remaining skew ≈ ±0.5 mm, mechanical, accepted | ✅ |
 
 ## Later / open
 

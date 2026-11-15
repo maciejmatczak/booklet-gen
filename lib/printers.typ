@@ -7,10 +7,13 @@
 //   frame of a front page and the page behind it (both upright); if the back is X mm higher,
 //   use X mm.
 
-// Brother DCP-L2532DW, A4, duplex long edge. Measured 2026-11-15: back 3 mm higher than front.
+// Brother DCP-L2532DW, A4, duplex long edge.
+// Back side printed 3 mm higher than front (2026-11-15). Fixed in the printer itself:
+// maintenance mode 45 → Y Adjust → DX = -30 (see docs/printing.md), so no software shift.
+// If the printer is reset, either redo that, or set back-shift: 3mm here.
 #let brother-dcp-l2532dw = (
   name: "Brother DCP-L2532DW",
-  back-shift: 3mm,
+  back-shift: 0mm,
 )
 
 // No correction.

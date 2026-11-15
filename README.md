@@ -22,6 +22,7 @@ task preview -- format-test
 | `tools/`        | Python helpers that generate data                              |
 | `fonts/`        | Fonts, downloaded by `task setup:fonts` (gitignored)           |
 | `build/`        | Output (PDF/PNG), gitignored, safe to delete                   |
+| `calibration/`  | Printer calibration sheets (`task calibration`)                 |
 | `docs/`         | Long-term notes: printing, formats, decisions                  |
 
 ## Conventions

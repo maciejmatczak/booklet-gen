@@ -115,6 +115,12 @@ tasks:
       - typst compile {{.TYPST_FLAGS}} --input pdf=/build/{{.BOOKLET}}.pdf --input pages={{.PAGES}} lib/print.typ build/{{.BOOKLET}}-print.pdf
       - 'echo "→ build/{{.BOOKLET}}-print.pdf: {{.PAGES}} pages. Print at 100%, duplex, flip on long edge. Cut, stack top halves on bottom halves, fold, nest."'
 
+  calibration:
+    desc: "Duplex calibration sheet into build/duplex-calibration.pdf (raw printer: print at 100%, duplex, long edge)"
+    cmds:
+      - mkdir -p build
+      - typst compile {{.TYPST_FLAGS}} calibration/duplex.typ build/duplex-calibration.pdf
+
   docs:
     desc: Render documentation diagrams (docs/diagrams/*.typ → docs/img/*.svg)
     sources:

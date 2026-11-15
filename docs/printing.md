@@ -65,17 +65,33 @@ If N isn't a multiple of 8, the last bottom half stays empty.
 
 ### Printer calibration
 
-Duplex printers don't place the back side exactly behind the front. Our printer prints the back **3 mm higher**
-than the front (vertical only; left-right is exact). That comes from the paper path: the back is printed from the
-other end of the sheet, so a small registration error shows up doubled.
+Duplex printers don't place the back side exactly behind the front. Ours printed the back **3 mm higher** than the
+front (vertical only; left-right was exact). That comes from the paper path: the back is printed from the other end
+of the sheet, so a small registration error shows up doubled.
 
-The fix lives in a **printer profile** (`lib/printers.typ`), not in the format: page design never sees it.
-`task print` moves every back side by the profile's `back-shift` (positive = down), clipped to each quarter,
-cut/fold marks included. The default profile is the Brother DCP-L2532DW (`back-shift: 3mm`).
+**Measuring:** `task calibration` builds `build/duplex-calibration.pdf`, one A4 sheet that goes straight to the
+printer (no imposition, no printer profile). Print at 100 %, duplex, long edge. Hold it against light: where the
+back's lines cross the front's rulers is the offset (vertical rulers: + = back higher). Edge lines on both sides
+should be 10 mm from the paper edge (checks centering of each side).
 
-To re-measure: on one leaf, hold a front page and the page behind it upright (e.g. against light) and compare their
-working-area frames. If the back is *X* mm higher, set `back-shift: X mm` (lower: negative). Another printer gets
-its own profile: `typst compile … --input printer=<key>`.
+**Fixed in the printer** (Brother DCP-L2532DW, 2026-11-15), so all documents benefit:
+
+1. Ready state: **Menu**, **Start**, then **▲ ×4** → "MAINTENANCE".
+2. ▲/▼ to **MAINTENANCE 45**, **OK**.
+3. **Y Adjust** → **DX** (duplex second side) → set to **−30**, **OK** ("Accepted"). Only DX was changed.
+4. **Stop** to leave.
+
+Units: 1 = 0.084 mm; negative moves the back side down. −36 (the computed 3 mm) overshot by ~0.5 mm; −30 aligned it.
+Source: Brother service manual (DCP-7090 family, listed for DCP-L2530DW/L2532DW), maintenance function 45; the
+manual describes maintenance mode as meant for service personnel.
+
+**Remaining:** small skew, back side ≈ 0.5 mm lower on the left and ≈ 0.5 mm higher on the right (≈ 0.4°). Not
+adjustable in the printer (function 45 only shifts). Comes from paper feed: snug tray guides, fanned paper,
+clean pickup roller help. Negligible on an A6 page.
+
+**Software fallback:** the printer profile (`lib/printers.typ`) has a `back-shift` that `task print` applies to back
+sides (positive = down). It's `0mm` now that the printer is fixed. If the printer gets reset or replaced, either redo
+the printer setting or set `back-shift` there. Another printer gets its own profile: `--input printer=<key>`.
 
 Imposition is plain Typst: each booklet page is exactly one A4 quarter, so pages are placed 1:1 with no scaling.
 The booklet template records its page count (`<booklet-pages>`), which `task print` reads with `typst eval`.
@@ -202,7 +218,7 @@ about 8–10 sheets (32–40 pages). It can be fixed by trimming after binding.
 ## Open questions
 
 - Dead zone: measured ≈ 4 mm left/right, ≈ 2.5 mm bottom (first print, 2026-11-15). Inside our margins, so `dead-zone: 5mm` stays.
-- Duplex offset: `back-shift: 3mm` to be verified by a test print (ROADMAP 5.3).
+- Duplex offset: solved in the printer (maintenance 45, Y Adjust DX = −30); remaining skew ≈ ±0.5 mm.
 - Trim or not: optional finishing step, decide after holding a real booklet.
 - A6 imposition variant: two copies vs. cut-and-stack (leaning: cut-and-stack).
 
