@@ -12,3 +12,6 @@ __pycache__/
 
 # Taskfile cache
 .task/
+
+# fonts: downloaded by `task setup:fonts`
+/fonts/

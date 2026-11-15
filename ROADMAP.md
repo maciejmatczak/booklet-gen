@@ -41,8 +41,8 @@ Small, agreed steps. Status: ✅ done · ⏭️ current · (blank) planned.
 | #   | Step                                                          | Status |
 |-----|---------------------------------------------------------------|--------|
 | 2.1 | `lib/template.typ`: format → page + mirrored margins, pad to multiple of 4, `is-right()` / `current-work-box()` | ✅ |
-| 2.2 | `task setup` (`setup:tools`, `setup:python`, `setup:fonts`): pinned Geist, Geist Mono, Literata downloaded into gitignored `fonts/` | ⏭️ |
-| 2.3 | `lib/theme.typ` (minimal, black-only): fonts + sizes, line weights + dash styles, grid steps (5, 3.55 Weeks) + dot sizes; per-booklet overrides | discuss first |
+| 2.2 | `task setup` (`setup:tools`, `setup:python`, `setup:fonts`): pinned Geist, Geist Mono, Literata downloaded into gitignored `fonts/` | ✅ |
+| 2.3 | `lib/theme.typ` (minimal, black-only): fonts + sizes, line weights + dash styles, grid steps (5, 3.55 Weeks) + dot sizes; per-booklet overrides | ⏭️ discuss first |
 | 2.4 | `lib/lib.typ`: single entry point                                                      | |
 | 2.5 | `format-test` → print specimen (12 pages): grid steps/dot sizes, line weights/dashes, fonts, mixed-weight table | discuss first |
 

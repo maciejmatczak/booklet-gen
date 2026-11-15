@@ -2,6 +2,14 @@
 
 Exploration of printable booklet templates built with Typst.
 
+## Getting started
+
+```bash
+mise install   # pinned tools: typst, tinymist, task, uv (see mise.toml)
+task setup     # everything else: Python env, fonts; safe to re-run
+task preview -- format-test
+```
+
 ## Layout
 
 | Path            | Purpose                                                        |
@@ -13,7 +21,7 @@ Exploration of printable booklet templates built with Typst.
 | `data/public/`  | Generated data, committed (e.g. holidays JSON)                 |
 | `data/private/` | Personal data, gitignored (e.g. calendar exports)              |
 | `tools/`        | Python helpers that generate data                              |
-| `fonts/`        | Vendored fonts for reproducible output                         |
+| `fonts/`        | Fonts, downloaded by `task setup:fonts` (gitignored)           |
 | `build/`        | Output (PDF/PNG), gitignored, safe to delete                   |
 | `docs/`         | Long-term notes: printing, formats, decisions                  |
 

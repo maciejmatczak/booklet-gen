@@ -7,7 +7,7 @@ vars:
   BOOKLET: "{{.CLI_ARGS}}"
   SRC: "booklets/{{.CLI_ARGS}}/main.typ"
   OUT: "build/{{.CLI_ARGS}}"
-  # Shared Typst flags: repo root for /lib, /data imports; vendored fonts.
+  # Shared Typst flags: repo root for /lib, /data imports; fonts from task setup:fonts.
   TYPST_FLAGS: --root . --font-path fonts
 
 tasks:
@@ -16,6 +16,61 @@ tasks:
     cmds:
       - task --list
     silent: true
+
+  # ---- setup: run once after cloning (safe to re-run; skips what's present) ----
+
+  setup:
+    desc: Set up the local environment (tools, Python, fonts)
+    cmds:
+      - task: setup:tools
+      - task: setup:python
+      - task: setup:fonts
+
+  setup:tools:
+    desc: Install pinned tools from mise.toml (typst, tinymist, task, uv)
+    cmds:
+      - mise install
+
+  setup:python:
+    desc: Create .venv with Python dependencies (uv sync)
+    status:
+      - test ! -f pyproject.toml # nothing to do until the Python project exists
+    cmds:
+      - uv sync
+
+  setup:fonts:
+    desc: Download pinned fonts into fonts/ (Geist, Geist Mono, Literata)
+    cmds:
+      # Geist + Geist Mono, SIL OFL. https://github.com/vercel/geist-font
+      - task: _font
+        vars:
+          NAME: geist
+          VERSION: "1.9.2"
+          URL: https://github.com/vercel/geist-font/releases/download/v1.9.2/geist-font-v1.9.2.zip
+          SHA256: 15f066d58dcb99fb10014a49913009fdaf41e464cfb8851a44b44e593c95d3d8
+          FILES: "'geist-font/Geist/ttf/*.ttf' 'geist-font/GeistMono/ttf/*.ttf'"
+      # Literata, SIL OFL. https://github.com/googlefonts/literata
+      - task: _font
+        vars:
+          NAME: literata
+          VERSION: "3.103"
+          URL: https://github.com/googlefonts/literata/releases/download/3.103/3.103.zip
+          SHA256: f7fb973cafb26cf785cbebaeaf51c18f87c15a3bcf4d82a7d4857564db5b056d
+          FILES: "'fonts/ttf/*.ttf'"
+
+  _font:
+    internal: true
+    # Up to date when this exact version is unpacked; a version bump re-downloads.
+    status:
+      - test -d fonts/{{.NAME}}-{{.VERSION}}
+    cmds:
+      - mkdir -p build/cache fonts
+      - curl -fsSL -o build/cache/{{.NAME}}-{{.VERSION}}.zip {{.URL}}
+      - echo "{{.SHA256}}  build/cache/{{.NAME}}-{{.VERSION}}.zip" | sha256sum -c --quiet
+      - rm -rf fonts/{{.NAME}}-*
+      - unzip -q -j build/cache/{{.NAME}}-{{.VERSION}}.zip {{.FILES}} -d fonts/{{.NAME}}-{{.VERSION}}
+
+  # ---- booklets ----
 
   _require-booklet:
     internal: true
