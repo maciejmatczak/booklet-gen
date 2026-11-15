@@ -11,9 +11,9 @@ Small, agreed steps. Status: ✅ done · ⏭️ current · (blank) planned.
 
 - Stack: Typst (pinned via mise), tinymist preview, Taskfile, uv for Python.
 - Printing: home duplex printer, A4 paper, sheets folded in half → page count always a multiple of 4.
-- Page size: **A6-class, trim model**. Print 4-up on A4 (cut and stack), sew, and trim the 3 open edges.
-  Final page ≈ 97 × 137 mm, with 3 mm bleed so content can reach the edge. Needed working area: 85 × 135 mm.
-  Binding: likely sewn.
+- Page model: **true A6 (105 × 148.5), physical margins in Typst** (5 mm outside for the dead zone, 6.75 mm
+  top/bottom for the dead zone and the cut gap, 5 mm inside for the spine). No bleed. Trimming optional. Print 4-up on A4, cut and stack.
+  Working area 95 × 135 (minimum needed: 85 × 135). Binding: likely sewn. Printer is black only.
 - Long-term notes live in `docs/` (see `docs/printing.md`).
 - Data: `data/public/` committed, `data/private/` gitignored.
 
@@ -31,9 +31,9 @@ Small, agreed steps. Status: ✅ done · ⏭️ current · (blank) planned.
 | #   | Step                                                                                   | Status |
 |-----|----------------------------------------------------------------------------------------|--------|
 | 1.1 | Discussion: home print mechanics — A4 duplex, fold, A5 vs A6, page order, multiple of 4 | ✅ |
-| 1.2 | Discussion: margins → trim model (trim, bleed, safe zone), see `docs/printing.md`      | ✅ |
-| 1.3 | `lib/formats.typ`: trim model as the first format (trim computed from physics) + docs diagram | ✅ |
-| 1.4 | Print test sheet: measure dead zone, check page order/flip, fix exact trim size        | deferred |
+| 1.2 | Discussion: page model → true A6 with physical margins (option C), see `docs/printing.md` | ✅ |
+| 1.3 | `lib/formats.typ` (`a6-home`) + docs diagrams + `booklets/format-test`                  | ✅ |
+| 1.4 | Print `format-test`: measure dead zone, check page order/flip (needs imposition)       | deferred |
 
 ## Phase 2 — The library
 

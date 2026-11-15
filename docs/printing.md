@@ -2,49 +2,49 @@
 
 How the physical side works and how it constrains the design.
 
-Our setup: home duplex printer, A4 paper, cutting knife, sewn binding (likely).
-Target: **A6-class booklet, 4 pages per A4 side, trimmed after binding**. The final page is a bit smaller than A6
-(≈ 97 × 137 mm, exact size fixed after measuring the printer). See [Page model](#page-model-trim-bleed-safe-zone).
+Our setup: home duplex printer (black only), A4 paper, cutting knife, sewn binding (likely).
+Target: **true A6 booklet (105 × 148.5 mm), 4 pages per A4 side, no bleed**. See [Page model](#page-model-physical-margins).
 
-## Page model: trim, bleed, safe zone
+## Page model: physical margins
 
-We print slightly bigger than the final page and trim the bound booklet's three open edges with a knife. This lets
-content (e.g. a grid) run to the very edge, like commercial notebooks. Trimming also evens out cut-and-stack height
-differences, creep and some duplex offset.
+**Every physical constraint lives in Typst from the start.** The Typst page is the real page you hold. The printer
+and binding limits become **physical margins** declared by the format (`lib/formats.typ`); content never goes there.
 
-| Concept       | Meaning                                                                   | Concern of      |
-|---------------|---------------------------------------------------------------------------|-----------------|
-| **Trim size** | Final physical page after trimming (≈ 97 × 137 mm)                        | design          |
-| **Bleed**     | Backgrounds extend ~3 mm past the trim edges; cut off when trimming        | design          |
-| **Safe zone** | Text and important content stay ~2–3 mm inside the trim (knife isn't exact) | design        |
-| **Margins**   | Pure design choice, can be 0 (grids). Inside/outside matter for text near the spine | design |
-| **Dead zone** | Printer can't print ~4–5 mm at A4 edges                                   | imposition only |
+| Edge           | Physical margin | Source                                                                           |
+|----------------|-----------------|----------------------------------------------------------------------------------|
+| outside        | 5 mm            | printer dead zone                                                                |
+| top / bottom   | 6.75 mm each    | ≥ 5 mm dead zone on the A4-edge side; **the same gap** left on the cut side, so every page is identical whichever half it came from. Set to give a 135 mm working-area height |
+| inside (spine) | 5 mm            | binding: fold curvature, sewing holes                                            |
 
-No bleed at the spine: the two pages of a sheet are joined there.
+- Margins are **mirrored**: inside/outside swap between right (odd) and left (even) pages. Typst does this with
+  `margin: (inside: …, outside: …)`.
+- **Working area: 95 × 135 mm**: everything inside the physical margins. That's where content goes.
+- **Design margins** are a per-booklet choice on top of the physical ones.
+- **Trimming is optional and independent.** A knife would only cut through physical margins, where there is no
+  content, so the design doesn't change.
+- **Imposition is trivial**: each Typst page *is* an A4 quarter; pages are placed edge to edge.
 
-![One A4 side, 4-up cut and stack, to scale](img/a4-sheet.svg)
+![One A4 side with 4 A6 pages, to scale](img/a4-sheet.svg)
 
 The diagram is generated from `lib/formats.typ` by `task docs`, so it always shows the current numbers.
+`booklets/format-test` shows the same model on real pages, with rulers to measure the printer's dead zone.
 
-**Typst page = trim + bleed.** The design never sees the A4 sheet or the dead zone. Placing pages onto the sheet is
-imposition's job. The format (`lib/formats.typ`) holds the physical facts; margins are a design choice and live in
-the template/theme.
+### Minimum requirement
 
-### Trim size math (A4, 4-up, cut and stack)
+The working area must be at least **85 × 135 mm**: that's what's really usable in the Moleskine pocket (90 × 140 mm)
+in use today, which loses ~5 mm at the spine and has its grid offset by ~2.5 mm at top and bottom. `a6-home` gives
+95 × 135 mm.
 
-With dead zone `d` and bleed `b`, the printable A4 area is `(210 − 2d) × (297 − 2d)`:
+### Options considered
 
-- width: `2 × W + 2 × b ≤ 210 − 2d`
-- height: `2 × H + 4 × b ≤ 297 − 2d`
+![Three approaches, to scale](img/options.svg)
 
-For `d = 5`, `b = 3`: **W ≤ 97, H ≤ 137.5**. For `d = 4`: W ≤ 98, H ≤ 138.5.
-
-### Requirement
-
-Working area needed: **85 × 135 mm**, from the Moleskine pocket (90 × 140 mm) currently in use. In that notebook,
-the spine side loses ~5 mm, and its grid is often printed offset by ~2.5 mm at top and bottom; what's left is the
-real working area. With trim 97 × 137.5, width has room to spare. Height is tight: 135 mm reaches into the 3 mm safe
-zone. That's fine for a grid and handwriting; printed text keeps the safe zone.
+- **A: bleed + trim.** The page is printed bigger and trimmed, so content reaches the edge exactly. Rejected: the
+  content is tables and grids with inner margins, so there's no need for bleed, and it gives the smallest page.
+- **B: no bleed, trim.** The page goes up to the printer limit and the dead-zone strips are trimmed off (100 × 143.5).
+  Rejected as the base: the Typst page would not be the paper quarter, and trimming would be mandatory.
+- **C: no bleed, gap at the cut, no trim. Chosen.** The Typst page is the true A6, and the printer limits are
+  physical margins. Trimming stays optional.
 
 ## The folded sheet
 
@@ -135,30 +135,24 @@ our printer). Which page edges that hits depends on where the page sat on the A4
 - **Cut line:** also the middle of the A4 sheet, so it is printable.
 - **A4 outer edges:** unprintable.
 
-With the trim model, the dead zone is handled during imposition: the trimmed pages plus bleed are placed inside the
-printable area, so the design never has to think about it. (Without trimming, every outer page edge would need a
-≥ 5 mm white frame.)
+The chosen model handles this with physical margins of 5 mm on outside, top and bottom of every page. The cut side
+doesn't need it, but gets the same gap so all pages are identical.
 
-### Bleed
+### Bleed (not used)
 
-Bleed means printing *beyond* the final cut line so a color or image reaches the edge cleanly after trimming.
-
-- It only matters if something should touch a page edge **and** that edge gets trimmed afterwards.
-- On the knife-cut edge: a knife cut is not perfectly precise. Either keep content away from the cut, or run color
-  across the cut line on purpose (that is bleed).
-- Trimming the finished booklet's open edge (after binding) is possible with a knife too, and also fixes creep.
-  It is optional.
+Bleed means printing *beyond* the final cut line so a color or image reaches the edge cleanly after trimming. It only
+matters for content that must touch a trimmed edge (color fills, photos, edge tabs). Our content (tables, dot and
+line grids) always has an inner margin, so we don't use it.
 
 ### Inside (spine) margin
 
-Pages near the spine curve into the binding, so the inside margin needs extra room. Margins are **mirrored**: the
-inside is on the left for right-hand pages and on the right for left-hand pages. Design on the real page size with
-asymmetric margins (`inside`/`outside` in Typst). Don't shrink the page. Details: Phase 1.2.
+A thin sewn booklet opens almost flat; the fold and sewing holes take a few mm. Physical inside margin: **5 mm**
+(adjust after the first sewn booklet). On a spread the two inside margins sit side by side, forming a 10 mm gutter.
 
 ### Duplex flip direction
 
-For sheets folded along the long side, the printer must flip on the **short edge**. The wrong setting puts every back
-side upside down. Check this once with a test print.
+Our layout is portrait A4 with upright pages, so the printer must flip on the **long edge** (the usual default). The
+wrong setting puts every back side upside down. Check this once with a test print.
 
 ### Creep
 
@@ -173,8 +167,8 @@ about 8–10 sheets (32–40 pages). It can be fixed by trimming after binding.
 
 ## Open questions
 
-- Our printer's unprintable border, in mm (measure in the 1.3 experiment). It fixes the exact trim size.
-- Trimming a sewn booklet with a knife: how clean is it in practice?
+- Our printer's real dead zone, in mm: measure with `booklets/format-test` (rulers), then update `lib/formats.typ`.
+- Trim or not: optional finishing step, decide after holding a real booklet.
 - A6 imposition variant: two copies vs. cut-and-stack (leaning: cut-and-stack).
 
 ## Our printer

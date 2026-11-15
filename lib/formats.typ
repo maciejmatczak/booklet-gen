@@ -1,35 +1,32 @@
 // Physical formats: how a booklet exists on paper.
 //
-// A format holds physical facts only (sheet, printer limits, trim, bleed, safe zone).
-// Margins and layout are design choices and live elsewhere.
+// Typst page = the true physical page (one quarter of the sheet).
+// Physical margins = where paper and process don't allow content:
+//   outside, top, bottom: printer dead zone (and the same gap at the cut line,
+//                         so every page is identical whichever half it came from)
+//   inside:               binding (fold curvature, sewing holes)
+// Margins are mirrored on left/right pages (Typst `inside`/`outside`).
+// Design margins are a separate, per-booklet choice on top of these.
 // Background and reasoning: docs/printing.md
 
 #let a4 = (width: 210mm, height: 297mm)
 
-// Largest trim size when cutting a sheet into two halves, each folded into
-// two pages (4 pages per sheet side, "cut and stack").
-//   width:  2 pages side by side, bleed on the two outer edges (none at the spine)
-//   height: 2 halves stacked, bleed above and below each
-#let trim-4up(sheet, dead-zone, bleed) = (
-  width: (sheet.width - 2 * dead-zone - 2 * bleed) / 2,
-  height: (sheet.height - 2 * dead-zone - 4 * bleed) / 2,
-)
+// work-height: optional fixed working-area height; top/bottom margins are
+// then set symmetrically to reach it (never below the dead zone).
+#let make-format(sheet: a4, dead-zone: 5mm, spine: 5mm, work-height: none) = {
+  // 4 pages per sheet side: cut in half, fold each half
+  let page = (width: sheet.width / 2, height: sheet.height / 2)
+  let vertical = if work-height == none { dead-zone } else { (page.height - work-height) / 2 }
+  assert(vertical >= dead-zone, message: "work-height too large: top/bottom margins would fall inside the dead zone")
+  (
+    sheet: sheet,
+    page: page,
+    dead-zone: dead-zone, // printer can't print this close to the sheet edge
+    spine: spine,         // lost to the binding
+    physical: (inside: spine, outside: dead-zone, top: vertical, bottom: vertical),
+  )
+}
 
-#let make-format(sheet: a4, dead-zone: 5mm, bleed: 3mm, safe: 3mm) = (
-  sheet: sheet,         // paper we print on
-  dead-zone: dead-zone, // printer can't print this close to the sheet edge
-  bleed: bleed,         // printed beyond the trim on open edges, cut off
-  safe: safe,           // keep text/important content this far inside the trim
-  trim: trim-4up(sheet, dead-zone, bleed), // final physical page
-)
-
-// Size of the Typst page: trim + bleed on the open edges
-// (top, bottom, outside; no bleed at the spine).
-#let page-size(fmt) = (
-  width: fmt.trim.width + fmt.bleed,
-  height: fmt.trim.height + 2 * fmt.bleed,
-)
-
-// A6-class booklet from A4 on the home printer, trimmed after binding.
-// dead-zone is an estimate until measured (ROADMAP 1.4).
-#let a6-trimmed = make-format()
+// True A6 (105 × 148.5) from A4 on the home printer; working area 95 × 135.
+// dead-zone is an estimate until measured with booklets/format-test.
+#let a6-home = make-format(work-height: 135mm)
