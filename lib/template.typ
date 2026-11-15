@@ -4,6 +4,7 @@
 //   #import "/lib/template.typ": booklet
 //   #show: booklet.with(format: a6-home)
 #import "formats.typ": a6-home, work-box
+#import "style.typ": fonts, sizes
 
 // Format of the current booklet, readable by components.
 #let current-format = state("booklet-format", a6-home)
@@ -24,6 +25,7 @@
     margin: format.physical, // inside/outside: mirrored on left/right pages
     background: background,
   )
+  set text(font: fonts.text, size: sizes.body)
   current-format.update(format)
   body
   // Pad with blank pages to a multiple of 4 (each folded sheet = 4 pages).

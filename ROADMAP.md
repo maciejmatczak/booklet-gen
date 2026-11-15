@@ -14,6 +14,7 @@ Small, agreed steps. Status: ✅ done · ⏭️ current · (blank) planned.
 - Page model: **true A6 (105 × 148.5), physical margins in Typst** (5 mm outside for the dead zone, 6.75 mm
   top/bottom for the dead zone and the cut gap, 5 mm inside for the spine). No bleed. Trimming optional. Print 4-up on A4, cut and stack.
   Working area 95 × 135 (minimum needed: 85 × 135). Binding: likely sewn. Printer is black only.
+- Style = shared library of named options (`lib/style.typ`); booklets pick and apply. Booklet-only styles go in `booklets/<name>/style.typ`. One font for now: Literata.
 - Fonts: Geist, Geist Mono, Literata (open licenses), downloaded by `task setup:fonts`, not committed.
 - Long-term notes live in `docs/` (see `docs/printing.md`).
 - Data: `data/public/` committed, `data/private/` gitignored.
@@ -42,9 +43,10 @@ Small, agreed steps. Status: ✅ done · ⏭️ current · (blank) planned.
 |-----|---------------------------------------------------------------|--------|
 | 2.1 | `lib/template.typ`: format → page + mirrored margins, pad to multiple of 4, `is-right()` / `current-work-box()` | ✅ |
 | 2.2 | `task setup` (`setup:tools`, `setup:python`, `setup:fonts`): pinned Geist, Geist Mono, Literata downloaded into gitignored `fonts/` | ✅ |
-| 2.3 | `lib/theme.typ` (minimal, black-only): fonts + sizes, line weights + dash styles, grid steps (5, 3.55 Weeks) + dot sizes; per-booklet overrides | ⏭️ discuss first |
-| 2.4 | `lib/lib.typ`: single entry point                                                      | |
-| 2.5 | `format-test` → print specimen (12 pages): grid steps/dot sizes, line weights/dashes, fonts, mixed-weight table | discuss first |
+| 2.3 | `lib/style.typ` (black-only library): font roles (Literata / Literata 7pt), named sizes, line weights + dashes (`pen`), grid steps (5, 3.55), dot sizes, `dots`/`lines`/`squares` utilities | ✅ |
+| 2.4 | `lib/lib.typ`: single entry point                                                      | ✅ |
+| 2.5 | `format-test` → 12-page print specimen: grid kinds/steps, dot sizes, lines/dashes/grey, tables, fonts, text on grid rows, spread across the fold | ✅ |
+| 2.6 | After printing the specimen: per-grid base text sizes (+ role sizes derived from them), grey yes/no | needs print (1.4) |
 
 ## Phase 3 — Components
 

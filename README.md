@@ -14,7 +14,7 @@ task preview -- format-test
 
 | Path            | Purpose                                                        |
 |-----------------|----------------------------------------------------------------|
-| `lib/`          | Shared Typst library: theme, formats, templates, utilities     |
+| `lib/`          | Shared Typst library: formats, template, style (`lib.typ` imports all) |
 | `lib/components/` | Reusable design components                                   |
 | `booklets/`     | Concrete booklets — one folder each, fixed physical format     |
 | `gallery/`      | Preview documents that render components in isolation          |
