@@ -45,6 +45,19 @@ tasks:
       - mkdir -p build
       - typst compile {{.TYPST_FLAGS}} {{.SRC}} build/{{.BOOKLET}}.pdf
 
+  docs:
+    desc: Render documentation diagrams (docs/diagrams/*.typ → docs/img/*.svg)
+    sources:
+      - docs/diagrams/*.typ
+      - lib/**/*.typ
+    cmds:
+      - mkdir -p docs/img
+      - for: { var: DIAGRAMS }
+        cmd: typst compile {{.TYPST_FLAGS}} {{.ITEM}} docs/img/$(basename {{.ITEM}} .typ).svg
+    vars:
+      DIAGRAMS:
+        sh: ls docs/diagrams/*.typ
+
   clean:
     desc: Remove all build output
     cmds:

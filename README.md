@@ -15,10 +15,12 @@ Exploration of printable booklet templates built with Typst.
 | `tools/`        | Python helpers that generate data                              |
 | `fonts/`        | Vendored fonts for reproducible output                         |
 | `build/`        | Output (PDF/PNG), gitignored, safe to delete                   |
+| `docs/`         | Long-term notes: printing, formats, decisions                  |
 
 ## Conventions
 
 - Typst is always run with the repo root as `--root`, so imports use
   root-relative paths: `#import "/lib/lib.typ": *`, `json("/data/public/…")`.
 - Printing target: home duplex printer, A4 paper, folded booklets
-  (page count is always a multiple of 4).
+  (page count is always a multiple of 4). Default page size A6.
+  See [docs/printing.md](docs/printing.md).
