@@ -46,6 +46,26 @@ in use today, which loses ~5 mm at the spine and has its grid offset by ~2.5 mm 
 - **C: no bleed, gap at the cut, no trim. Chosen.** The Typst page is the true A6, and the printer limits are
   physical margins. Trimming stays optional.
 
+## How to print
+
+```bash
+task print -- <booklet>
+```
+
+1. This builds `build/<booklet>.pdf` (A6 pages in reading order), then imposes it into
+   `build/<booklet>-print.pdf`: A4 sheets, 4 pages per side, in cut-and-stack order.
+2. Print **at 100 % / actual size** (never "fit to page"), **duplex, flip on the long edge**, A4.
+3. Cut every sheet across the middle (marks at both sides of the cut line, inside the printable area).
+4. Put the pile of **top halves on the pile of bottom halves**.
+5. Fold each half (marks at top and bottom of the fold), nest them in order, check the page numbers, bind.
+
+Page order on small sheet *k* (1 = outermost) of an *N*-page booklet: front `N−2k+2 · 2k−1`, back `2k · N−2k+1`.
+The top halves of the A4 sheets carry small sheets 1…A, the bottom halves the rest (A = number of A4 sheets).
+If N isn't a multiple of 8, the last bottom half stays empty.
+
+Imposition is plain Typst: each booklet page is exactly one A4 quarter, so pages are placed 1:1 with no scaling.
+The booklet template records its page count (`<booklet-pages>`), which `task print` reads with `typst eval`.
+
 ## The folded sheet
 
 A sheet folded in half gives 4 pages: 2 on the front, 2 on the back.
@@ -69,7 +89,7 @@ A sheet folded in half gives 4 pages: 2 on the front, 2 on the back.
   | 1 (outer) | 8 · 1 | 2 · 7 |
   | 2 (inner) | 6 · 3 | 4 · 5 |
 
-- Reordering pages onto sheets is **imposition**, a separate step done by a tool (pdfjam).
+- Reordering pages onto sheets is **imposition**, done by `task print` (`lib/impose.typ`).
   Design always happens on pages in reading order: 1, 2, 3…
 
 ## Paper sizes

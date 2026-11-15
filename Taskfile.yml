@@ -100,6 +100,21 @@ tasks:
       - mkdir -p build
       - typst compile {{.TYPST_FLAGS}} {{.SRC}} build/{{.BOOKLET}}.pdf
 
+  print:
+    desc: "Print-ready A4 sheets into build/<booklet>-print.pdf (print at 100%, duplex, flip on long edge)"
+    deps: [_require-booklet]
+    vars:
+      PAGES:
+        sh: |
+          typst eval {{.TYPST_FLAGS}} --in {{.SRC}} 'query(<booklet-pages>).at(0, default: (value: "")).value'
+    preconditions:
+      - sh: '[ -n "{{.PAGES}}" ]'
+        msg: "{{.SRC}} has no page count; does it use the booklet template (#show: booklet)?"
+    cmds:
+      - task: build
+      - typst compile {{.TYPST_FLAGS}} --input pdf=/build/{{.BOOKLET}}.pdf --input pages={{.PAGES}} lib/print.typ build/{{.BOOKLET}}-print.pdf
+      - 'echo "→ build/{{.BOOKLET}}-print.pdf: {{.PAGES}} pages. Print at 100%, duplex, flip on long edge. Cut, stack top halves on bottom halves, fold, nest."'
+
   docs:
     desc: Render documentation diagrams (docs/diagrams/*.typ → docs/img/*.svg)
     sources:

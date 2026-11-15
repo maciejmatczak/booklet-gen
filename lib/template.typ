@@ -35,6 +35,8 @@
   context {
     let n = locate(<booklet-content-end>).page()
     let missing = calc.rem(4 - calc.rem(n, 4), 4)
+    // Final page count, read by imposition (task print).
+    [#metadata(n + missing) <booklet-pages>]
     for _ in range(missing) { pagebreak() }
   }
 }

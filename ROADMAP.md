@@ -35,7 +35,7 @@ Small, agreed steps. Status: ✅ done · ⏭️ current · (blank) planned.
 | 1.1 | Discussion: home print mechanics — A4 duplex, fold, A5 vs A6, page order, multiple of 4 | ✅ |
 | 1.2 | Discussion: page model → true A6 with physical margins (option C), see `docs/printing.md` | ✅ |
 | 1.3 | `lib/formats.typ` (`a6-home`) + docs diagrams + `booklets/format-test`                  | ✅ |
-| 1.4 | Print `format-test`: measure dead zone, check page order/flip (needs imposition)       | deferred |
+| 1.4 | Print `format-test` (`task print -- format-test`): measure dead zone, check page order/flip, specimen checklist | ⏭️ |
 
 ## Phase 2 — The library
 
@@ -75,8 +75,8 @@ Small, agreed steps. Status: ✅ done · ⏭️ current · (blank) planned.
 
 | #   | Step                                                          | Status |
 |-----|---------------------------------------------------------------|--------|
-| 6.1 | Learn pdfjam                                                  | |
-| 6.2 | `task impose`: reading-order PDF → print-ready sheets         | |
+| 6.1 | Typst-level imposition (`lib/impose.typ`), cut and stack, 4 pages per A4 side (chosen over pdfjam: no TeX, geometry from the format) | ✅ (done early, needed for 1.4) |
+| 6.2 | `task print -- <booklet>` → `build/<booklet>-print.pdf`, page count read from the template | ✅ |
 
 ## Later / open
 
