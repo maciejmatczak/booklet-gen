@@ -1,0 +1,11 @@
+# build output — always safe to delete
+/build/
+
+# private data (personal calendars etc.) — never committed
+/data/private/*
+!/data/private/.gitkeep
+
+# python
+.venv/
+__pycache__/
+*.pyc

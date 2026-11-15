@@ -1,0 +1,51 @@
+version: "3"
+
+# Usage: task <name> -- <booklet>      e.g.  task preview -- hello
+# The booklet name is the folder under booklets/.
+
+vars:
+  BOOKLET: "{{.CLI_ARGS}}"
+  SRC: "booklets/{{.CLI_ARGS}}/main.typ"
+  OUT: "build/{{.CLI_ARGS}}"
+  # Shared Typst flags: repo root for /lib, /data imports; vendored fonts.
+  TYPST_FLAGS: --root . --font-path fonts
+
+tasks:
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
+    silent: true
+
+  _require-booklet:
+    internal: true
+    preconditions:
+      - sh: '[ -n "{{.BOOKLET}}" ]'
+        msg: "Pass a booklet name after --, e.g.: task preview -- hello"
+      - sh: '[ -f "{{.SRC}}" ]'
+        msg: "Not found: {{.SRC}}"
+
+  preview:
+    desc: Live browser preview (tinymist), for humans
+    deps: [_require-booklet]
+    cmds:
+      - tinymist preview {{.TYPST_FLAGS}} --no-open {{.SRC}}
+
+  watch-png:
+    desc: Re-render PNG pages on every save into build/<booklet>/, for agents
+    deps: [_require-booklet]
+    cmds:
+      - mkdir -p {{.OUT}}
+      - typst watch {{.TYPST_FLAGS}} --ppi 144 {{.SRC}} "{{.OUT}}/page-{0p}.png"
+
+  build:
+    desc: Final PDF into build/<booklet>.pdf
+    deps: [_require-booklet]
+    cmds:
+      - mkdir -p build
+      - typst compile {{.TYPST_FLAGS}} {{.SRC}} build/{{.BOOKLET}}.pdf
+
+  clean:
+    desc: Remove all build output
+    cmds:
+      - rm -rf build
