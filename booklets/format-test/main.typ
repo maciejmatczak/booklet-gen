@@ -1,6 +1,7 @@
 // Format test booklet: shows the physical model of a format on real pages.
 // Black only (laser printer): line styles, hatching and dots, no grey fills.
 #import "/lib/formats.typ": a6-home
+#import "/lib/template.typ": booklet, is-right, current-work-box
 
 #let fmt = a6-home
 #let P = fmt.page
@@ -13,35 +14,27 @@
 #let s-tick = 0.4pt + black
 #let hatch = tiling(size: (2mm, 2mm), place(line(start: (0mm, 2mm), end: (2mm, 0mm), stroke: 0.25pt + black)))
 
-// working area (inside the physical margins) for a right or left page
-#let work-box(right) = (
-  x: if right { m.inside } else { m.outside },
-  y: m.top,
-  w: P.width - m.inside - m.outside,
-  h: P.height - m.top - m.bottom,
-)
-
 // ---- grids, anchored to the spine side and top of the working area ----
 #let step = 5mm
 #let dot-grid(c, right) = {
-  let nx = int(c.w / step)
-  let ny = int(c.h / step)
+  let nx = int(c.width / step)
+  let ny = int(c.height / step)
   for i in range(nx + 1) {
     for j in range(ny + 1) {
-      let x = if right { c.x + i * step } else { c.x + c.w - i * step }
+      let x = if right { c.x + i * step } else { c.x + c.width - i * step }
       place(dx: x - 0.25mm, dy: c.y + j * step - 0.25mm, circle(radius: 0.25mm, fill: black, stroke: none))
     }
   }
 }
 #let line-grid(c, right, vertical: true) = {
   let st = 0.2pt + black
-  for j in range(1, int(c.h / step) + 1) {
-    place(dx: c.x, dy: c.y + j * step, line(length: c.w, stroke: st))
+  for j in range(1, int(c.height / step) + 1) {
+    place(dx: c.x, dy: c.y + j * step, line(length: c.width, stroke: st))
   }
   if vertical {
-    for i in range(1, int(c.w / step) + 1) {
-      let x = if right { c.x + i * step } else { c.x + c.w - i * step }
-      place(dx: x, dy: c.y, line(length: c.h, angle: 90deg, stroke: st))
+    for i in range(1, int(c.width / step) + 1) {
+      let x = if right { c.x + i * step } else { c.x + c.width - i * step }
+      place(dx: x, dy: c.y, line(length: c.height, angle: 90deg, stroke: st))
     }
   }
 }
@@ -86,12 +79,12 @@
 
 #let page-background = context {
   let p = here().page()
-  let right = calc.odd(p)
-  let c = work-box(right)
+  let right = is-right()
+  let c = current-work-box()
 
   // physical margins: hatched
   place(rect(width: P.width, height: P.height, fill: hatch, stroke: none))
-  place(dx: c.x, dy: c.y, rect(width: c.w, height: c.h, fill: white, stroke: none))
+  place(dx: c.x, dy: c.y, rect(width: c.width, height: c.height, fill: white, stroke: none))
 
   // sample grids
   let g = grid-for.at(str(p), default: none)
@@ -100,7 +93,7 @@
   if g == "squares" { line-grid(c, right) }
 
   // working area outline
-  place(dx: c.x, dy: c.y, rect(width: c.w, height: c.h, stroke: s-work))
+  place(dx: c.x, dy: c.y, rect(width: c.width, height: c.height, stroke: s-work))
 
   // rulers on the three edges that touch the sheet edge or the cut
   for edge in ("top", "bottom", "outside") { ruler(edge, right) }
@@ -111,7 +104,7 @@
     align(center + horizon, rotate(-90deg, reflow: true, text(size: 5pt, weight: "bold", tracking: 1pt)[SPINE]))))
 }
 
-#set page(width: P.width, height: P.height, margin: m, background: page-background)
+#show: booklet.with(format: fmt, background: page-background)
 #set text(size: 7pt)
 #set par(spacing: 0.9em)
 

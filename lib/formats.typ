@@ -27,6 +27,18 @@
   )
 }
 
+// Working area of a page, in page coordinates (origin: top-left of the page).
+// right: true for right-hand (odd) pages, where the spine is on the left.
+#let work-box(fmt, right) = {
+  let m = fmt.physical
+  (
+    x: if right { m.inside } else { m.outside },
+    y: m.top,
+    width: fmt.page.width - m.inside - m.outside,
+    height: fmt.page.height - m.top - m.bottom,
+  )
+}
+
 // True A6 (105 × 148.5) from A4 on the home printer; working area 95 × 135.
 // dead-zone is an estimate until measured with booklets/format-test.
 #let a6-home = make-format(work-height: 135mm)
