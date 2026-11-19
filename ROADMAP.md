@@ -74,7 +74,7 @@ Output, one entry per day in the range (committed, so builds don't need Python):
 | #   | Step                                                          | Status |
 |-----|---------------------------------------------------------------|--------|
 | 4.1 | Python skeleton: root `pyproject.toml` (not a package, `package = false`), `.python-version`, `uv.lock`; dependency `holidays`. `task setup:python` picks it up | ✅ |
-| 4.2 | `tools/calendar_pl.py --from 2026-12-01 --to 2028-01-31` → `data/public/calendar-pl-2027.json`. **holidays**: days off from the `holidays` library (`PL`, Polish names). **observances**: our own rule list — fixed (Dzień Babci, Dzień Dziadka, Walentynki, Dzień Kobiet, Prima Aprilis, Dzień Matki, Dzień Dziecka, Dzień Ojca, Andrzejki, Mikołajki), Easter-relative (Tłusty Czwartek, Ostatki, Popielec, Niedziela Palmowa, Wielki Czwartek, Wielki Piątek, Wielka Sobota), clock changes (last Sunday of March / October) | ✅ |
+| 4.2 | `tools/calendar_pl.py --from 2026-12-01 --to 2028-01-31` → `data/public/calendar-pl-2027.json`. **holidays**: days off from the `holidays` library (`PL`, Polish names). **observances**: our own rule list — fixed (Dzień Babci, Dzień Dziadka, Walentynki, Dzień Kobiet, Prima Aprilis, Dzień Matki, Dzień Dziecka, Dzień Ojca, Halloween, Andrzejki, Mikołajki), Easter-relative (Tłusty Czwartek, Ostatki, Popielec, Niedziela Palmowa, Wielki Czwartek, Wielki Piątek, Wielka Sobota), clock changes (last Sunday of March / October) | ✅ |
 | 4.3 | `task data`: runs the generator, skipped when up to date (Taskfile `sources` / `generates`) | ✅ |
 | 4.4 | `lib/data.typ`: `calendar-pl`, `day-key(d)`, `day-info(d)`; used by the booklet in Phase 3 | ✅ |
 

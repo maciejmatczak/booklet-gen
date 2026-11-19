@@ -28,6 +28,7 @@ FIXED = [
     ((5, 26), "Dzień Matki"),
     ((6, 1), "Dzień Dziecka"),
     ((6, 23), "Dzień Ojca"),
+    ((10, 31), "Halloween"),
     ((11, 29), "Andrzejki"),  # the evening before St Andrew (30.11)
     ((12, 6), "Mikołajki"),
 ]
