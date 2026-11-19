@@ -1,0 +1,12 @@
+# Python is only used to generate data Typst can't know (tools/ → data/public/).
+[project]
+name = "booklet-gen"
+version = "0"
+requires-python = ">=3.13"
+dependencies = [
+  "holidays",
+  "python-dateutil", # dateutil.easter; imported directly
+]
+
+[tool.uv]
+package = false # just a dependency list, nothing to install
