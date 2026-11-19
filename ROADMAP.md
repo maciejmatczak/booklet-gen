@@ -60,13 +60,23 @@ locally first (see README → Components).
 | 3.3 | Print, fold, review, iterate                                  | |
 | 3.4 | Promote a component to `lib/components/` only when a second booklet needs it | later |
 
-## Phase 4 — Data (when a booklet needs it)
+## Phase 4 — Data: Polish calendar days
+
+Python only for knowledge Typst doesn't have; days, weeks, months and grids are computed in Typst (`datetime`).
+Range: 2026-12-01 → 2028-01-31 (the 2027 booklet plus one month either side). All names in Polish.
+
+Output, one entry per day in the range (committed, so builds don't need Python):
+
+```json
+"2027-02-14": { "holidays": [], "observances": ["Walentynki"] }
+```
 
 | #   | Step                                                          | Status |
 |-----|---------------------------------------------------------------|--------|
-| 4.1 | Root `pyproject.toml` (uv), `tools/booklet_tools/` package    | |
-| 4.2 | Holidays generator → `data/public/`, `task data`              | |
-| 4.3 | Load JSON in Typst, use it in the booklet                     | |
+| 4.1 | Python skeleton: root `pyproject.toml` (not a package, `package = false`), `.python-version`, `uv.lock`; dependency `holidays`. `task setup:python` picks it up | |
+| 4.2 | `tools/calendar_pl.py --from 2026-12-01 --to 2028-01-31` → `data/public/calendar-pl-2027.json`. **holidays**: days off from the `holidays` library (`PL`, Polish names). **observances**: our own rule list — fixed (Dzień Babci, Dzień Dziadka, Walentynki, Dzień Kobiet, Prima Aprilis, Dzień Matki, Dzień Dziecka, Dzień Ojca, Andrzejki, Mikołajki), Easter-relative (Tłusty Czwartek, Ostatki, Popielec, Niedziela Palmowa, Wielki Czwartek, Wielki Piątek, Wielka Sobota), clock changes (last Sunday of March / October) | |
+| 4.3 | `task data`: runs the generator, skipped when up to date (Taskfile `sources` / `generates`) | |
+| 4.4 | `lib/data.typ`: load the file, look a day up by date; use it in the booklet | |
 
 ## Phase 5 — Imposition
 
@@ -79,4 +89,5 @@ locally first (see README → Components).
 ## Later / open
 
 - Private data: Google Calendar → `data/private/`.
+- Name days (imieniny): skipped for now. There's no open dataset, and full lists are too long for an A6 day cell.
 - CI that builds every booklet.
