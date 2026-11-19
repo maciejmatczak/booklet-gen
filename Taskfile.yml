@@ -25,6 +25,7 @@ tasks:
       - task: setup:tools
       - task: setup:python
       - task: setup:fonts
+      - task: data # private data JSON must exist for booklets to compile (empty if no .ics)
 
   setup:tools:
     desc: Install pinned tools from mise.toml (typst, tinymist, task, uv)
@@ -73,7 +74,13 @@ tasks:
   # ---- data ----
 
   data:
-    desc: Generate data/public/ (Polish holidays + observances, 2026-12 → 2028-01)
+    desc: Generate all data (public + private), 2026-12 → 2028-01
+    cmds:
+      - task: data:public
+      - task: data:private
+
+  data:public:
+    desc: Polish holidays + observances → data/public/calendar-pl-2027.json (committed)
     sources:
       - tools/calendar_pl.py
       - uv.lock
@@ -81,6 +88,17 @@ tasks:
       - data/public/calendar-pl-2027.json
     cmds:
       - uv run tools/calendar_pl.py --from 2026-12-01 --to 2028-01-31 --out data/public/calendar-pl-2027.json
+
+  data:private:
+    desc: "Birthdays + name days: data/private/family_calendar.ics → .json (gitignored; empty days if the .ics is missing)"
+    sources:
+      - tools/calendar_private.py
+      - uv.lock
+      - data/private/family_calendar.ics
+    generates:
+      - data/private/family_calendar.json
+    cmds:
+      - uv run tools/calendar_private.py --from 2026-12-01 --to 2028-01-31 data/private/family_calendar.ics
 
   # ---- booklets ----
 

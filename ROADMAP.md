@@ -77,6 +77,7 @@ Output, one entry per day in the range (committed, so builds don't need Python):
 | 4.2 | `tools/calendar_pl.py --from 2026-12-01 --to 2028-01-31` → `data/public/calendar-pl-2027.json`. **holidays**: days off from the `holidays` library (`PL`, Polish names). **observances**: our own rule list — fixed (Dzień Babci, Dzień Dziadka, Walentynki, Dzień Kobiet, Prima Aprilis, Dzień Matki, Dzień Dziecka, Dzień Ojca, Halloween, Andrzejki, Mikołajki), Easter-relative (Tłusty Czwartek, Ostatki, Popielec, Niedziela Palmowa, Wielki Czwartek, Wielki Piątek, Wielka Sobota), clock changes (last Sunday of March / October) | ✅ |
 | 4.3 | `task data`: runs the generator, skipped when up to date (Taskfile `sources` / `generates`) | ✅ |
 | 4.4 | `lib/data.typ`: `calendar-pl`, `day-key(d)`, `day-info(d)`; used by the booklet in Phase 3 | ✅ |
+| 4.5 | Private family calendar: Google Calendar export (manual, safest) saved as `data/private/family_calendar.ics` → `tools/calendar_private.py` → `family_calendar.json` (gitignored), birthdays + name days only; `task data:private`, empty days without the `.ics`; `day-family(d)` in `lib/data.typ` | ✅ |
 
 ## Phase 5 — Imposition
 
@@ -88,6 +89,5 @@ Output, one entry per day in the range (committed, so builds don't need Python):
 
 ## Later / open
 
-- Private data: Google Calendar → `data/private/`.
-- Name days (imieniny): skipped for now. There's no open dataset, and full lists are too long for an A6 day cell.
+- General name days (imieniny): skipped. There's no open dataset, and full lists are too long for an A6 day cell. Family name days come from 4.5.
 - CI that builds every booklet.

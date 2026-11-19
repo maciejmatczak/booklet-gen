@@ -1,11 +1,13 @@
-# Python is only used to generate data Typst can't know (tools/ → data/public/).
+# Python is only used to generate data Typst can't know (tools/ → data/).
 [project]
 name = "booklet-gen"
 version = "0"
 requires-python = ">=3.13"
 dependencies = [
   "holidays",
+  "icalendar>=7.3.0",
   "python-dateutil", # dateutil.easter; imported directly
+  "recurring-ical-events>=3.8.2",
 ]
 
 [tool.uv]

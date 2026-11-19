@@ -8,7 +8,7 @@ Exploration of printable booklet templates built with Typst.
 mise install   # pinned tools: typst, tinymist, task, uv (see mise.toml)
 task setup     # everything else: Python env, fonts; safe to re-run
 task preview -- format-test
-task data      # regenerate data/public/ (only when the generator changes)
+task data      # regenerate data/ (after a new calendar export or a generator change)
 ```
 
 ## Layout
@@ -19,7 +19,7 @@ task data      # regenerate data/public/ (only when the generator changes)
 | `lib/components/` | Reusable design components                                   |
 | `booklets/`     | Concrete booklets — one folder each, fixed physical format     |
 | `data/public/`  | Generated data, committed (`calendar-pl-2027.json`: Polish holidays + observances) |
-| `data/private/` | Personal data, gitignored (e.g. calendar exports)              |
+| `data/private/` | Personal data, gitignored: `family_calendar.ics` (Google Calendar export) → `.json` |
 | `tools/`        | Python helpers that generate data                              |
 | `fonts/`        | Fonts, downloaded by `task setup:fonts` (gitignored)           |
 | `build/`        | Output (PDF/PNG), gitignored, safe to delete                   |
