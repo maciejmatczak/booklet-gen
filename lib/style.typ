@@ -1,6 +1,7 @@
 // Shared style: a library of named options. Booklets pick and apply them.
-// Black only (laser printer): lightness comes from thinner lines, smaller dots and
-// dashes, not from grey. Booklet-specific styles go in booklets/<name>/style.typ.
+// Black toner only (laser printer): lightness comes from thinner lines, smaller dots and dashes,
+// or from grey, which the printer makes as a fine halftone (check it on paper).
+// Booklet-specific styles go in booklets/<name>/style.typ (a calendar keeps them in one `theme`).
 
 // ---- fonts, by role ----
 #let fonts = (
@@ -8,6 +9,22 @@
   small: "Literata 7pt", // optical size drawn for small text
   hand: "Caveat", // handwriting: printed entries that should read as written in
 )
+// Font proportions per em, measured from the font files: cap height, x-height, descender depth.
+#let font-metrics = (
+  "Literata": (cap: 0.7, x: 0.507, desc: 0.23),
+  "Literata 7pt": (cap: 0.7, x: 0.519, desc: 0.23),
+  "Caveat": (cap: 0.61, x: 0.4, desc: 0.245),
+)
+
+// Text set on a grid row takes its size from the grid, not from a fixed size:
+// its lowercase (x-height) is this share of the grid step, whatever the font,
+// so different fonts on one grid look the same size (3.55 mm → Literata 7pt ≈ 5.4 pt, Caveat ≈ 7.1 pt).
+#let grid-x-share = 0.28
+#let grid-size(step, font) = step * grid-x-share / font-metrics.at(font).x
+// Baseline of grid text, measured up from the row's bottom line: text sits on the line like
+// writing does, descenders just clear of it (it would look afloat if centred in the row).
+#let grid-baseline-lift(step, font) = grid-size(step, font) * font-metrics.at(font).desc + 0.1mm
+
 // Below this size, use the small optical size.
 #let small-threshold = 7.5pt
 
@@ -67,11 +84,15 @@
 // anchor-x: left or right. Usually the spine side, so grids line up across a spread.
 #let _grid-area(width, height, draw) = box(width: width, height: height, layout(sz => draw(sz.width, sz.height)))
 
-#let dots(width: 100%, height: 100%, step: steps.standard, dot: dot-sizes.s, anchor-x: left, phase: (0mm, 0mm)) = {
+// skip: none, or (i, j) => bool to leave out the dot in column i (counted from anchor-x)
+// and row j (from the top), e.g. where a rule or a box edge is drawn over the grid.
+#let dots(width: 100%, height: 100%, step: steps.standard, dot: dot-sizes.s, paint: black, anchor-x: left, phase: (0mm, 0mm), skip: none) = {
   _grid-area(width, height, (w, h) => {
-    for x in _ticks(w, step, anchor-x, phase.at(0)) {
-      for y in _ticks(h, step, top, phase.at(1)) {
-        place(dx: x - dot / 2, dy: y - dot / 2, circle(radius: dot / 2, fill: black, stroke: none))
+    for (i, x) in _ticks(w, step, anchor-x, phase.at(0)).enumerate() {
+      for (j, y) in _ticks(h, step, top, phase.at(1)).enumerate() {
+        if skip == none or not skip(i, j) {
+          place(dx: x - dot / 2, dy: y - dot / 2, circle(radius: dot / 2, fill: paint, stroke: none))
+        }
       }
     }
   })

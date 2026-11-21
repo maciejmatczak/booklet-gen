@@ -60,9 +60,9 @@ locally first (see README → Components).
 | #   | Step                                                          | Status |
 |-----|---------------------------------------------------------------|--------|
 | 3.1 | Choose the first booklet and sketch its spreads: `calendar-a6-home` (2027), a calendar-only day list for a weekly planner (mockups compared: week grid, weeks as columns, day lists, future log) | ✅ |
-| 3.2 | `booklets/calendar-a6-home/`: day list on the library grid, presets `b5` (5 mm, 2 rows a day) / `bw` (3.55 mm, 4 rows a day), paging `rolling` / `month`, chosen with `INPUTS="--input variant=… --input paging=…"`; holidays + observances from `day-info`, birthdays + name days from `day-family` printed in Caveat (handwriting) | ✅ |
+| 3.2 | `booklets/calendar-a6-home/`: day list on the library grid, input `grid` = `5mm` (2 rows a day) / `3.55mm` (4 rows a day), paging `rolling` / `month`, chosen with `INPUTS="--input grid=… --input paging=…"`; holidays + observances from `day-info`, birthdays + name days from `day-family` printed in Caveat (handwriting) | ✅ |
 | 3.3 | Print, fold, review, iterate (both presets; stipple density, label crowding, text on the grid) | ⏭️ |
-| 3.4 | Promote a component to `lib/components/` only when a second booklet needs it | later |
+| 3.4 | Promote a component to `lib/components/` only when a second booklet needs it: `day-list.typ`, for `calendar-a6-jott-insert` (6.3) | ✅ |
 
 ## Phase 4 — Data: Polish calendar days
 
@@ -98,7 +98,8 @@ Output, one entry per day in the range (committed, so builds don't need Python):
 |-----|---------------------------------------------------------------|--------|
 | 6.1 | Format `a6-jott-insert` (85 × 148.5, 5 mm punched corners, outer margin 3 mm) + specimen `format-test-a6-jott-insert` (trim rulers, punch outline, fit checklist) | ✅ |
 | 6.2 | Print, trim, punch, fold, test-fit in the Jottbook; adjust width / margins | ⏭️ |
-| 6.3 | First booklet on it | |
+| 6.3 | First booklet on it: `calendar-a6-jott-insert`, the day list with the same options (`grid` 5mm / 3.55mm, `paging` rolling / month); title at 12 pt to fit 77 mm, the build fails if a title doesn't fit | ✅ |
+| 6.4 | Print, trim, punch, review the calendar in the Jottbook | ⏭️ |
 
 ## Later / open
 

@@ -1,18 +1,18 @@
 // Calendar 2027: a day list for writing in, one row per day on the library grid.
 //
-// Choices (defaults below), from the command line:
+// Choices (defaults below; all options: README.md in this folder), from the command line:
 //   task build -- calendar-a6-home
-//   task build INPUTS="--input variant=bw --input paging=month" -- calendar-a6-home
-//   variant: b5 (5 mm grid, 2 rows a day) | bw (3.55 mm grid, 4 rows a day)
+//   task build INPUTS="--input paging=month" -- calendar-a6-home
+//   grid:    3.55mm (3.55 mm grid, a day is 4 rows) | 5mm (5 mm grid, 2 rows a day: not implemented yet)
 //   paging:  rolling (days just continue) | month (each month starts a new spread)
 #import "/lib/lib.typ": *
-#import "style.typ": presets
-#import "components.typ": *
+#import "style.typ": presets, theme
+#import "/lib/components/day-list.typ": *
 
-#let variant = sys.inputs.at("variant", default: "b5")
+#let grid-choice = sys.inputs.at("grid", default: "3.55mm")
 #let paging = sys.inputs.at("paging", default: "rolling")
-#assert(variant in presets, message: "variant must be one of: " + presets.keys().join(", "))
-#let preset = presets.at(variant)
+#assert(grid-choice in presets, message: "grid must be one of: " + presets.keys().join(", "))
+#let preset = presets.at(grid-choice)
 
 #let fmt = a6-home
 #let from = datetime(year: 2027, month: 1, day: 1)
@@ -21,9 +21,9 @@
 #show: booklet.with(format: fmt)
 
 // Page 1 (right): title. The day list starts on page 2, a left page, so spreads stay together.
-#title-page(preset, paging, 2027)
+#title-page(2027, theme)
 
 #for days in paginate(from, to, days-per-page(preset, fmt), paging: paging) {
   pagebreak()
-  day-list-page(days, preset)
+  day-list-page(days, preset, theme)
 }

@@ -7,7 +7,7 @@ vars:
   BOOKLET: "{{.CLI_ARGS}}"
   SRC: "booklets/{{.CLI_ARGS}}/main.typ"
   OUT: "build/{{.CLI_ARGS}}"
-  # Optional booklet choices: task build INPUTS="--input variant=bw" -- calendar-a6-home
+  # Optional booklet choices: task build INPUTS="--input grid=3.55mm" -- calendar-a6-home
   # (defined before TYPST_FLAGS: Task resolves vars in order)
   INPUTS: ""
   # Shared Typst flags: repo root for /lib, /data imports; fonts from task setup:fonts.

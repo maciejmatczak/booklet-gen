@@ -50,8 +50,9 @@ reusing the same components. Lowercase, hyphens. Settings such as the year or a 
 
 ### General
 
-- Booklet choices come in as Typst inputs (`sys.inputs`, with defaults in `main.typ`):
-  `task build INPUTS="--input variant=bw" -- calendar-a6-home`.
+- Booklet choices come in as Typst inputs (`sys.inputs`, with defaults in `main.typ`); each booklet's
+  `README.md` lists its options:
+  `task build INPUTS="--input grid=3.55mm" -- calendar-a6-home`.
 - Typst is always run with the repo root as `--root`, so imports use
   root-relative paths: `#import "/lib/lib.typ": *`, `json("/data/public/…")`.
 - Printing target: home duplex printer, A4 paper, folded booklets
