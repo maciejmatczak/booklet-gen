@@ -14,10 +14,14 @@ Small, agreed steps. Status: ✅ done · ⏭️ current · (blank) planned.
 - Page model: **true A6 (105 × 148.5), physical margins in Typst** (5 mm outside for the dead zone, 6.75 mm
   top/bottom for the dead zone and the cut gap, 5 mm inside for the spine). No bleed. Trimming optional. Print 4-up on A4, cut and stack.
   Working area 95 × 135 (minimum needed: 85 × 135). Binding: likely sewn. Printer is black only.
-- Style = shared library of named options (`lib/style.typ`); booklets pick and apply. Booklet-only styles go in `booklets/<name>/style.typ`. One font for now: Literata.
-- Fonts: Geist, Geist Mono, Literata (open licenses), downloaded by `task setup:fonts`, not committed.
+- Style = shared library of named options (`lib/style.typ`); booklets pick and apply. Booklet-only styles go in `booklets/<name>/style.typ`. Text font: Literata; handwriting role (`fonts.hand`): Caveat, for printed entries that should read as written in.
+- Fonts: Geist, Geist Mono, Literata, Caveat (open licenses), downloaded by `task setup:fonts`, not committed.
 - Long-term notes live in `docs/` (see `docs/printing.md`).
 - Data: `data/public/` committed, `data/private/` gitignored.
+- **One fixed format per booklet.** Size drives design decisions, so a booklet is not generated into several sizes.
+  Small format changes (margins, dead zone, height) are absorbed by deriving values from the format; a new size is
+  a new booklet that reuses (promoted) components and gets its own presets and print review. Booklets are named
+  `<content>-<size>`, e.g. `calendar-a6`. The year is a setting, not part of the name.
 
 ## Phase 0 — Foundation
 
@@ -55,9 +59,9 @@ locally first (see README → Components).
 
 | #   | Step                                                          | Status |
 |-----|---------------------------------------------------------------|--------|
-| 3.1 | Choose the first booklet and sketch its spreads               | ⏭️ |
-| 3.2 | `booklets/<name>/` with its own `components.typ` / `style.typ` as needed | |
-| 3.3 | Print, fold, review, iterate                                  | |
+| 3.1 | Choose the first booklet and sketch its spreads: `calendar-a6` (2027), a calendar-only day list for a weekly planner (mockups compared: week grid, weeks as columns, day lists, future log) | ✅ |
+| 3.2 | `booklets/calendar-a6/`: day list on the library grid, presets `b5` (5 mm, 2 rows a day) / `bw` (3.55 mm, 4 rows a day), paging `rolling` / `month`, chosen with `INPUTS="--input variant=… --input paging=…"`; holidays + observances from `day-info`, birthdays + name days from `day-family` printed in Caveat (handwriting) | ✅ |
+| 3.3 | Print, fold, review, iterate (both presets; stipple density, label crowding, text on the grid) | ⏭️ |
 | 3.4 | Promote a component to `lib/components/` only when a second booklet needs it | later |
 
 ## Phase 4 — Data: Polish calendar days

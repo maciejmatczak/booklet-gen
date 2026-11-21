@@ -40,5 +40,5 @@
 }
 
 // True A6 (105 × 148.5) from A4 on the home printer; working area 95 × 135.
-// dead-zone is an estimate until measured with booklets/format-test.
+// dead-zone is an estimate until measured with booklets/format-test-a6.
 #let a6-home = make-format(work-height: 135mm)

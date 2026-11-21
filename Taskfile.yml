@@ -1,14 +1,17 @@
 version: "3"
 
-# Usage: task <name> -- <booklet>      e.g.  task preview -- hello
+# Usage: task <name> -- <booklet>      e.g.  task preview -- calendar-a6
 # The booklet name is the folder under booklets/.
 
 vars:
   BOOKLET: "{{.CLI_ARGS}}"
   SRC: "booklets/{{.CLI_ARGS}}/main.typ"
   OUT: "build/{{.CLI_ARGS}}"
+  # Optional booklet choices: task build INPUTS="--input variant=bw" -- calendar-a6
+  # (defined before TYPST_FLAGS: Task resolves vars in order)
+  INPUTS: ""
   # Shared Typst flags: repo root for /lib, /data imports; fonts from task setup:fonts.
-  TYPST_FLAGS: --root . --font-path fonts
+  TYPST_FLAGS: --root . --font-path fonts {{.INPUTS}}
 
 tasks:
   default:
@@ -40,7 +43,7 @@ tasks:
       - uv sync
 
   setup:fonts:
-    desc: Download pinned fonts into fonts/ (Geist, Geist Mono, Literata)
+    desc: Download pinned fonts into fonts/ (Geist, Geist Mono, Literata, Caveat)
     cmds:
       # Geist + Geist Mono, SIL OFL. https://github.com/vercel/geist-font
       - task: _font
@@ -58,6 +61,16 @@ tasks:
           URL: https://github.com/googlefonts/literata/releases/download/3.103/3.103.zip
           SHA256: f7fb973cafb26cf785cbebaeaf51c18f87c15a3bcf4d82a7d4857564db5b056d
           FILES: "'fonts/ttf/*.ttf'"
+      # Caveat (handwriting), SIL OFL. https://github.com/googlefonts/caveat
+      # No release zips: single files pinned by commit (last font change).
+      - task: _font-files
+        vars:
+          NAME: caveat
+          VERSION: "59745e8"
+          BASE_URL: https://raw.githubusercontent.com/googlefonts/caveat/59745e818ef7973e11e70cb1358d0e902b56c5fc/fonts/ttf
+          FILES: >-
+            Caveat-Regular.ttf=7af58d70e539c9195cc328617a68c9961ed804a4404b0b818989ba7c013e8776
+            Caveat-Bold.ttf=29e5cf4177d79af56c256c24f687fd6a74c3d04c3c4660ccca87b0a6d1fa3452
 
   _font:
     internal: true
@@ -70,6 +83,22 @@ tasks:
       - echo "{{.SHA256}}  build/cache/{{.NAME}}-{{.VERSION}}.zip" | sha256sum -c --quiet
       - rm -rf fonts/{{.NAME}}-*
       - unzip -q -j build/cache/{{.NAME}}-{{.VERSION}}.zip {{.FILES}} -d fonts/{{.NAME}}-{{.VERSION}}
+
+  # Same as _font, for fonts published as loose files. FILES: "file=sha256" pairs.
+  _font-files:
+    internal: true
+    status:
+      - test -d fonts/{{.NAME}}-{{.VERSION}}
+    cmds:
+      - rm -rf fonts/{{.NAME}}-*
+      - mkdir -p fonts/{{.NAME}}-{{.VERSION}}.part
+      - |
+        for entry in {{.FILES}}; do
+          file="${entry%%=*}"; sum="${entry#*=}"
+          curl -fsSL -o "fonts/{{.NAME}}-{{.VERSION}}.part/$file" "{{.BASE_URL}}/$file"
+          echo "$sum  fonts/{{.NAME}}-{{.VERSION}}.part/$file" | sha256sum -c --quiet
+        done
+      - mv fonts/{{.NAME}}-{{.VERSION}}.part fonts/{{.NAME}}-{{.VERSION}}
 
   # ---- data ----
 
@@ -106,7 +135,7 @@ tasks:
     internal: true
     preconditions:
       - sh: '[ -n "{{.BOOKLET}}" ]'
-        msg: "Pass a booklet name after --, e.g.: task preview -- hello"
+        msg: "Pass a booklet name after --, e.g.: task preview -- calendar-a6"
       - sh: '[ -f "{{.SRC}}" ]'
         msg: "Not found: {{.SRC}}"
 

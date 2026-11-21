@@ -2,10 +2,11 @@
 // Black only (laser printer): lightness comes from thinner lines, smaller dots and
 // dashes, not from grey. Booklet-specific styles go in booklets/<name>/style.typ.
 
-// ---- fonts, by role (all Literata for now) ----
+// ---- fonts, by role ----
 #let fonts = (
   text: "Literata",
   small: "Literata 7pt", // optical size drawn for small text
+  hand: "Caveat", // handwriting: printed entries that should read as written in
 )
 // Below this size, use the small optical size.
 #let small-threshold = 7.5pt
