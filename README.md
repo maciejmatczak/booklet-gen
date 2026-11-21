@@ -41,9 +41,12 @@ components are composed, meaningful pieces built from them (week table, month ca
 
 ### Naming
 
-Booklets are named `<content>-<size>`: `calendar-a6`, `format-test-a6`. Each booklet has one fixed format (size drives
-design); a different size is a new booklet reusing the same components. Name the page size, not the production setup
-(`a6`, not `a6-home`); lowercase, hyphens. Settings such as the year or a layout variant are inputs, not names.
+Formats (`lib/formats.typ`) are named by purpose and how they're made: `a6-home` (A6 with home equipment),
+`a6-jott-insert` (an insert for a Jottbook). Their values are static, with a comment saying where each number comes from.
+
+Booklets are named `<content>-<format>`, leaving out a production suffix like `-home`: `calendar-a6`,
+`format-test-a6-jott-insert`. Each booklet has one fixed format (size drives design); another format is a new booklet
+reusing the same components. Lowercase, hyphens. Settings such as the year or a layout variant are inputs, not names.
 
 ### General
 

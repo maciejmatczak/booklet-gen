@@ -90,6 +90,15 @@ Output, one entry per day in the range (committed, so builds don't need Python):
 | 5.1 | Typst-level imposition (`lib/impose.typ`), cut and stack, 4 pages per A4 side (chosen over pdfjam: no TeX, geometry from the format) | ✅ (done early, needed for 1.4) |
 | 5.2 | `task print -- <booklet>` → `build/<booklet>-print.pdf`, page count read from the template | ✅ |
 | 5.3 | Duplex offset (back printed 3 mm higher): measured with `task calibration`, **fixed in the printer** (maintenance 45, Y Adjust DX = −30); `back-shift` back to 0 mm. Remaining skew ≈ ±0.5 mm, mechanical, accepted | ✅ |
+| 5.4 | Imposition described by data: formats are static values naming their layout (`cut-stack-a4`: A4, 2 × 2, cut-stack, pages against the fold); pages narrower than their cell get crop ticks in the waste; `task print` imposes with the booklet's own format (published as `<booklet-format>`). `a6-home` output unchanged (pixel-compared) | ✅ |
+
+## Phase 6 — Jottbook insert
+
+| #   | Step                                                          | Status |
+|-----|---------------------------------------------------------------|--------|
+| 6.1 | Format `a6-jott-insert` (85 × 148.5, 5 mm punched corners, outer margin 3 mm) + specimen `format-test-a6-jott-insert` (trim rulers, punch outline, fit checklist) | ✅ |
+| 6.2 | Print, trim, punch, fold, test-fit in the Jottbook; adjust width / margins | ⏭️ |
+| 6.3 | First booklet on it | |
 
 ## Later / open
 

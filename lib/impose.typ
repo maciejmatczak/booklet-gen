@@ -1,10 +1,12 @@
-// Imposition: booklet pages (reading order) → A4 sheets for duplex printing.
+// Imposition: booklet pages (reading order) → printed sheets for duplex printing.
 //
-// Layout: 4 pages per sheet side ("cut and stack"). Each Typst page is exactly
-// one quarter of the sheet, so pages are placed 1:1, no scaling, no offsets.
+// The format says what the page is; its layout (format.imposition, see formats.typ) says
+// how pages go onto the sheet. Each page sits in a cell of the sheet's grid, against the
+// fold; a page narrower than its cell leaves waste at the outer side, marked with crop
+// ticks. A page that fills its cell (a6-home) is placed edge to edge, no ticks.
 // Print at 100 % / actual size, duplex, flip on the LONG edge.
-// After printing: cut every sheet across the middle, put the pile of top halves
-// on the pile of bottom halves, fold each half, nest in order.
+// After printing (cut-stack): cut every sheet across the middle, put the pile of top halves
+// on the pile of bottom halves, trim at the crop ticks (if any), fold each half, nest in order.
 // Background: docs/printing.md
 #import "formats.typ": a6-home
 #import "printers.typ": default-printer
@@ -27,26 +29,52 @@
   sides
 }
 
-// Small marks inside the physical margins (printable area), to guide cutting and folding.
-#let _marks(fmt) = {
+// Cell size and page offset inside the cell, from the format and its layout.
+// Left pages (column 0) sit against the fold on their right, right pages (column 1) on their left.
+#let _geometry(fmt) = {
+  let lay = fmt.imposition
+  assert(lay.order == "cut-stack" and lay.grid == (cols: 2, rows: 2) and lay.align == "fold",
+    message: "impose: only the cut-stack 2 × 2 layout aligned to the fold is implemented")
+  let cell = (width: lay.sheet.width / lay.grid.cols, height: lay.sheet.height / lay.grid.rows)
   let (width: pw, height: ph) = fmt.page
+  assert(pw <= cell.width and ph <= cell.height, message: "impose: page is larger than its cell")
+  assert(ph == cell.height, message: "impose: trimming top/bottom is not implemented (page height must fill the cell)")
+  (sheet: lay.sheet, cell: cell, page: fmt.page, waste: cell.width - pw)
+}
+
+// Small marks inside the printable area, to guide cutting, trimming and folding.
+#let _marks(fmt) = {
+  let g = _geometry(fmt)
+  let (width: cw, height: ch) = g.cell
   let st = 0.3pt + black
   let d = fmt.dead-zone + 0.5mm // just inside the printable area
   let len = 3mm
   // cut line, at both sheet sides
-  place(dx: d, dy: ph, line(length: len, stroke: st))
-  place(dx: 2 * pw - d - len, dy: ph, line(length: len, stroke: st))
+  place(dx: d, dy: ch, line(length: len, stroke: st))
+  place(dx: 2 * cw - d - len, dy: ch, line(length: len, stroke: st))
   // fold line, at top and bottom of the sheet
-  place(dx: pw, dy: d, line(length: len, angle: 90deg, stroke: st))
-  place(dx: pw, dy: 2 * ph - d - len, line(length: len, angle: 90deg, stroke: st))
+  place(dx: cw, dy: d, line(length: len, angle: 90deg, stroke: st))
+  place(dx: cw, dy: 2 * ch - d - len, line(length: len, angle: 90deg, stroke: st))
+  // crop ticks: in the waste strips, from the printable edge to the trim line,
+  // near the top and bottom of each half; they go away with the waste
+  if g.waste > d {
+    for row in range(2) {
+      for y in (row * ch + d, (row + 1) * ch - d) {
+        place(dx: d, dy: y, line(length: g.waste - d, stroke: st))
+        place(dx: 2 * cw - g.waste, dy: y, line(length: g.waste - d, stroke: st))
+      }
+    }
+  }
 }
 
-// pdf: bytes of the booklet PDF; n: its page count.
+// pdf: bytes of the booklet PDF; n: its page count; format: the booklet's format.
 // printer: calibration profile (printers.typ); its back-shift moves back sides vertically.
 #let impose(pdf, n, format: a6-home, printer: default-printer, marks: true) = {
-  let (width: pw, height: ph) = format.page
-  set page(width: format.sheet.width, height: format.sheet.height, margin: 0pt)
-  // Each page is clipped to its own quarter, so a shift never spills over the cut.
+  let g = _geometry(format)
+  let (width: pw, height: ph) = g.page
+  let (width: cw, height: ch) = g.cell
+  set page(width: g.sheet.width, height: g.sheet.height, margin: 0pt)
+  // Each page is clipped to its own trim box, so a shift never spills over a cut.
   let put(x, y, p, shift) = place(dx: x, dy: y, box(width: pw, height: ph, clip: true,
     place(dy: shift, image(pdf, page: p, width: pw, height: ph))))
   for (i, side) in cut-stack-order(n).enumerate() {
@@ -54,8 +82,8 @@
     let shift = if calc.odd(i) { printer.back-shift } else { 0mm } // sides alternate front, back
     for (row, pair) in ((0, side.top), (1, side.bottom)) {
       if pair != none {
-        put(0mm, row * ph, pair.at(0), shift)
-        put(pw, row * ph, pair.at(1), shift)
+        put(cw - pw, row * ch, pair.at(0), shift) // left page: right edge on the fold
+        put(cw, row * ch, pair.at(1), shift)      // right page: left edge on the fold
       }
     }
     // marks move with the side, so front and back marks land on the same spot of paper

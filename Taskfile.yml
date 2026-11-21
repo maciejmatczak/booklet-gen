@@ -166,13 +166,16 @@ tasks:
       PAGES:
         sh: |
           typst eval {{.TYPST_FLAGS}} --in {{.SRC}} 'query(<booklet-pages>).at(0, default: (value: "")).value'
+      FORMAT:
+        sh: |
+          typst eval {{.TYPST_FLAGS}} --in {{.SRC}} 'query(<booklet-format>).at(0, default: (value: "a6-home")).value' | tr -d '"'
     preconditions:
       - sh: '[ -n "{{.PAGES}}" ]'
         msg: "{{.SRC}} has no page count; does it use the booklet template (#show: booklet)?"
     cmds:
       - task: build
-      - typst compile {{.TYPST_FLAGS}} --input pdf=/build/{{.BOOKLET}}.pdf --input pages={{.PAGES}} lib/print.typ build/{{.BOOKLET}}-print.pdf
-      - 'echo "→ build/{{.BOOKLET}}-print.pdf: {{.PAGES}} pages. Print at 100%, duplex, flip on long edge. Cut, stack top halves on bottom halves, fold, nest."'
+      - typst compile {{.TYPST_FLAGS}} --input pdf=/build/{{.BOOKLET}}.pdf --input pages={{.PAGES}} --input format={{.FORMAT}} lib/print.typ build/{{.BOOKLET}}-print.pdf
+      - 'echo "→ build/{{.BOOKLET}}-print.pdf: {{.PAGES}} pages, {{.FORMAT}}. Print at 100%, duplex, flip on long edge. Cut, stack top halves on bottom halves, trim at crop ticks (if any), fold, nest."'
 
   calibration:
     desc: "Duplex calibration sheet into build/duplex-calibration.pdf (raw printer: print at 100%, duplex, long edge)"

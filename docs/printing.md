@@ -56,12 +56,34 @@ task print -- <booklet>
    `build/<booklet>-print.pdf`: A4 sheets, 4 pages per side, in cut-and-stack order.
 2. Print **at 100 % / actual size** (never "fit to page"), **duplex, flip on the long edge**, A4.
 3. Cut every sheet across the middle (marks at both sides of the cut line, inside the printable area).
-4. Put the pile of **top halves on the pile of bottom halves**.
+4. Put the pile of **top halves on the pile of bottom halves**. For trimmed formats, trim the outer strips now
+   (see [Trimmed formats](#trimmed-formats-jottbook-insert)).
 5. Fold each half (marks at top and bottom of the fold), nest them in order, check the page numbers, bind.
 
 Page order on small sheet *k* (1 = outermost) of an *N*-page booklet: front `N−2k+2 · 2k−1`, back `2k · N−2k+1`.
 The top halves of the A4 sheets carry small sheets 1…A, the bottom halves the rest (A = number of A4 sheets).
 If N isn't a multiple of 8, the last bottom half stays empty.
+
+### Trimmed formats: Jottbook insert
+
+A format's page can be narrower than its A4 cell. Imposition (`lib/impose.typ`) then places each page **against the
+fold** inside its cell, and the rest of the cell at the outer side is waste. The format names its layout
+(`imposition: cut-stack-a4` in `lib/formats.typ`: A4, 2 × 2 cells, cut-stack order, pages against the fold); A6 fills
+its cell exactly, so nothing changes for it.
+
+`a6-jott-insert` is an insert for a Leuchtturm1917 Jottbook Pocket A6 (90 × 150, 5 mm rounded corners), hinged at
+its spine: **85 × 148.5** (90 − 5 mm hinge room; half of A4 high, so top and bottom are not cut), 20 mm of waste per
+page. At the table:
+
+1. Cut in half, stack top halves on bottom halves (as for A6).
+2. **Trim both outer strips** at the crop ticks: short lines in the waste, near the top and bottom of each half,
+   ending on the trim line. They go away with the waste.
+3. **Punch the 4 outer corners** of each half-sheet (5 mm corner punch), one sheet at a time.
+4. Fold, nest, sew.
+
+Because the printer's dead zone lands in the waste, the outer margin is only a safety distance from the cut (3 mm).
+`booklets/format-test-a6-jott-insert` checks it: trim rulers (1 mm ticks from the trimmed edge), the punch outline,
+and a fit checklist.
 
 ### Printer calibration
 

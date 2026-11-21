@@ -3,7 +3,7 @@
 #import "/lib/formats.typ": a6-home
 
 #let fmt = a6-home
-#let (width: W, height: H) = fmt.sheet
+#let (width: W, height: H) = fmt.imposition.sheet
 #let (width: pw, height: ph) = fmt.page
 #let m = fmt.physical
 #let pad = 12mm
