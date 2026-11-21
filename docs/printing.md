@@ -56,6 +56,9 @@ task print -- <booklet>
 1. This builds `build/<booklet>.pdf` (A6 pages in reading order), then imposes it into
    `build/<booklet>-print.pdf`: A4 sheets, 4 pages per side, in cut-and-stack order.
 2. Print **at 100 % / actual size** (never "fit to page"), **duplex, flip on the long edge**, A4.
+   Print from **SumatraPDF**, not a browser: browsers rasterise PDFs at low resolution before printing, so
+   every line under ≈ 0.5 pt came out the same weight (style specimen sheet E, 2026-11-21). SumatraPDF renders
+   at the resolution the driver asks for, so thin lines keep their weights.
 3. Cut every sheet across the middle (marks at both sides of the cut line, inside the printable area).
 4. Put the pile of **top halves on the pile of bottom halves**. For trimmed formats, trim the outer strips now
    (see [Trimmed formats](#trimmed-formats-jottbook-insert)).

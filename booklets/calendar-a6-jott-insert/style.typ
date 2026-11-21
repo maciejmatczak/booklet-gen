@@ -63,7 +63,7 @@
   date-box: pen("hairline"), // same as the day rule: no bump where they meet
   // fills
   day-off-fill: luma(88%),                       // date column on weekends and holidays
-  grid-dot: (size: dot-sizes.s, paint: luma(50%)), // 0.3 mm, 50 % grey
+  grid-dot: (size: dot-sizes.s, paint: black),     // 0.3 mm, black (specimen B2/B18)
   // title page
   cover: (
     label: (font: fonts.small, size: sizes.tiny, weight: "bold", tracking: 2.5pt), // KALENDARZ

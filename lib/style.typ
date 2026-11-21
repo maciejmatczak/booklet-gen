@@ -1,13 +1,14 @@
 // Shared style: a library of named options. Booklets pick and apply them.
 // Black toner only (laser printer): lightness comes from thinner lines, smaller dots and dashes,
-// or from grey (`greys`), which the printer makes as a fine halftone (check it on paper).
+// Grey (`greys`) looked checkered at every level on the first specimen print (2026-11-21), but that was
+// printed from a browser (low-resolution raster); retest from SumatraPDF before ruling grey out.
 // Choices are made on paper with booklets/style-specimen-a4.
 // Booklet-specific styles go in booklets/<name>/style.typ (a calendar keeps them in one `theme`).
 
 // ---- fonts, by role ----
 #let fonts = (
   text: "Literata",
-  small: "Literata 7pt", // optical size drawn for small text
+  small: "Literata", // small text; Literata 7pt (optical size) was tried and read worse on paper
   hand: "Caveat", // handwriting: printed entries that should read as written in
 )
 // Font proportions per em, measured from the font files: cap height, x-height, descender depth.
@@ -19,17 +20,17 @@
 
 // Text set on a grid row takes its size from the grid, not from a fixed size:
 // its lowercase (x-height) is this share of the grid step, whatever the font,
-// so different fonts on one grid look the same size (3.55 mm → Literata 7pt ≈ 5.4 pt, Caveat ≈ 7.1 pt).
+// so different fonts on one grid look the same size (3.55 mm → Literata ≈ 5.6 pt, Caveat ≈ 7.1 pt).
 #let grid-x-share = 0.28
 #let grid-size(step, font) = step * grid-x-share / font-metrics.at(font).x
 // Baseline of grid text, measured up from the row's bottom line: text sits on the line like
 // writing does, descenders just clear of it (it would look afloat if centred in the row).
 #let grid-baseline-lift(step, font) = grid-size(step, font) * font-metrics.at(font).desc + 0.1mm
 
-// Below this size, use the small optical size.
+// Below this size, use fonts.small.
 #let small-threshold = 7.5pt
 
-// Text in a given size, with the right optical size picked automatically.
+// Text in a given size, with the font for that size picked automatically.
 #let txt(size, body) = text(font: if size <= small-threshold { fonts.small } else { fonts.text }, size: size, body)
 
 // ---- named text sizes (clean-design line) ----
@@ -42,6 +43,8 @@
 )
 
 // ---- lines ----
+// Lines under ≈ 0.5 pt printed the same from a browser; from SumatraPDF thin weights separate
+// (specimen E, 2026-11-21, see docs/printing.md → How to print). Weights are chosen on sheet E.
 #let weights = (
   hairline: 0.25pt, // ≈ 2 printer dots at 600 dpi
   thin: 0.4pt,
@@ -76,7 +79,7 @@
 )
 #let dot-sizes = (
   xs: 0.2mm,
-  s: 0.3mm,
+  s: 0.3mm, // chosen on paper (specimen B2/B18): 0.3 mm, black, on both steps
   m: 0.4mm,
   l: 0.5mm,
 )

@@ -104,34 +104,6 @@
 #weight-sheet("C", "Lines", (s, st) => lines(step: s, stroke: st))
 #weight-sheet("D", "Squares", (s, st) => squares(step: s, stroke: st))
 
-// =====================================================================
-// E · line weights (reference for rules)
-// =====================================================================
-#pagebreak()
-#code-counter.update(0)
-#sheet("E", "Line weights", [Rules for pages and tables: which weights and greys read as strong, regular, quiet? Three parallel rules, 3.55 mm apart.])
-#let rules(st) = stack(spacing: steps.weeks - 0pt, ..range(3).map(_ => line(length: 100%, stroke: st)))
-#subhead[weight × grey (solid)]
-#grid(columns: (1fr,) * 4, column-gutter: 5mm, row-gutter: 5mm,
-  ..for (w, wv) in weights.pairs() {
-    for (gname, g) in greys.pairs() {
-      (swatch(next-code("E"), ([#w #pt(wv)], [#gname #pct(g)]), 9mm, pad(top: 1mm, rules(pen(w, grey: gname)))),)
-    }
-  })
-#subhead[dashes × weight (black)]
-#grid(columns: (1fr,) * 3, column-gutter: 5mm, row-gutter: 5mm,
-  ..for d in dashes.keys().filter(d => d != "solid") {
-    for w in ("hairline", "thin", "regular") {
-      (swatch(next-code("E"), (d, [#w #pt(weights.at(w))]), 9mm, pad(top: 1mm, rules(pen(w, dash: d)))),)
-    }
-  })
-
-// =====================================================================
-// F · faint tables
-// =====================================================================
-#pagebreak()
-#code-counter.update(0)
-#sheet("F", "Faint tables", [How faint can a table go and still read? Left: hierarchy by weight, all one grey. Right: hierarchy by grey, light weights.])
 #let days = ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
 // roles: frame (outline + header rule), section (before the weekend), inner (rows, columns)
 #let week-table(frame, section, inner) = {
@@ -152,6 +124,58 @@
     table.hline(stroke: frame),
   )
 }
+
+// =====================================================================
+// E · line weights: is each step of the scale visibly different?
+// =====================================================================
+// Black only (grey prints as a checkered halftone). Weights are whole printer dots: a laser
+// draws a line as N dots (600 dpi, 1 dot = 0.12 pt), so steps between dot counts are what exist.
+// Print it at each driver quality (300 / 600 / 1200 dpi) and from more than one PDF app: where the
+// ladder stops changing is the real floor of that print path.
+#let dot-w = 72pt / 600
+#let dw(n) = n * dot-w
+#let ladder = (1, 2, 3, 4, 5, 6, 8, 10, 12, 16)
+#let wlabel(n) = [#n #if n == 1 [dot] else [dots] #pt(dw(n))]
+// the library's named weights, as the nearest dot count, to place them on the ladder
+#let named-at(n) = weights.pairs().filter(((k, v)) => calc.round(v / dot-w) == n).map(((k, v)) => [#k #pt(v)])
+
+#pagebreak()
+#code-counter.update(0)
+#sheet("E", "Line weights", [Which steps can you tell apart? Pick a scale (quiet · regular · strong) whose levels separate at a glance. Black only; weights in printer dots (600 dpi). Note the print quality and app you used.])
+
+#subhead[1 · ladder: tick the weights you would use]
+#for n in ladder {
+  grid(columns: (52mm, 1fr), align: horizon,
+    tag(next-code("E"), (wlabel(n), ..named-at(n))),
+    line(length: 100%, stroke: dw(n) + black))
+  v(2.2mm)
+}
+
+#subhead[2 · neighbours on the ladder, interleaved: tick if the two read as different]
+#let interleave(a, b) = stack(spacing: 2.2mm, ..range(6).map(i => line(length: 100%, stroke: dw(if calc.even(i) { a } else { b }) + black)))
+#grid(columns: (1fr,) * 3, column-gutter: 6mm, row-gutter: 4mm,
+  ..range(ladder.len() - 1).map(i => {
+    let (a, b) = (ladder.at(i), ladder.at(i + 1))
+    swatch(next-code("E"), ([#a vs #b dots], [#pt(dw(a)) / #pt(dw(b))]), 12mm, pad(top: 0.5mm, interleave(a, b)))
+  }))
+
+#subhead[3 · three-level scales on a table: tick the one where you see three levels]
+// frame + header = strong, before the weekend = regular, rows and columns = quiet
+#let scales = ((2, 4, 8), (2, 5, 10), (2, 6, 12), (3, 6, 12), (2, 4, 12), (3, 5, 8), (4, 8, 16), (2, 5, 8))
+#grid(columns: (1fr,) * 4, column-gutter: 5mm, row-gutter: 4mm,
+  ..scales.map(((q, r, st)) => block(breakable: false, {
+    tag(next-code("E"), ([#q · #r · #st dots],))
+    v(1mm)
+    week-table(dw(st) + black, dw(r) + black, dw(q) + black)
+  })))
+#txt(sizes.tiny)[Now in `lib/style.typ`: hairline 0.25 pt ≈ 2 dots · thin 0.4 pt ≈ 3 · regular 0.6 pt = 5 · strong 1 pt ≈ 8 · heavy 1.5 pt ≈ 12.]
+
+// =====================================================================
+// F · faint tables
+// =====================================================================
+#pagebreak()
+#code-counter.update(0)
+#sheet("F", "Faint tables", [How faint can a table go and still read? Left: hierarchy by weight, all one grey. Right: hierarchy by grey, light weights.])
 #let role(name, w, g) = [#name #w #pt(weights.at(w)) #pct(greys.at(g))]
 // left: strong / regular / hairline, the whole table in one grey
 #let by-weight = greys.keys().map(g => (("strong", g), ("regular", g), ("hairline", g)))
@@ -183,7 +207,7 @@
 #let sample-text = [Notes, plans & 0123456789 · Środa, 11 listopada · żółć ĄĘŁŃŚŹ]
 #let row(id, vals, body) = grid(columns: (58mm, 1fr), align: horizon, tag(id, vals), body)
 
-#subhead[named sizes (Literata 7pt used at ≤ #pt(small-threshold) automatically)]
+#subhead[named sizes]
 #for (name, s) in sizes.pairs() {
   row(next-code("G"), ([#name #pt(s)], if s <= small-threshold { fonts.small } else { fonts.text }), txt(s, sample-text))
   v(1.5mm)
@@ -201,15 +225,6 @@
   }
 }
 
-#subhead[Literata vs Literata 7pt at small sizes]
-#for s in (5pt, 5.5pt, 6pt, 6.5pt, 7pt, 7.5pt) {
-  grid(columns: (1fr, 1fr), column-gutter: 4mm, align: horizon,
-    ..(fonts.text, fonts.small).map(f => grid(columns: (34mm, 1fr), align: horizon,
-      tag(next-code("G"), (f, pt(s))), text(font: f, size: s)[Pon 14 · 09:30 dentysta, chleb]))
-  )
-  v(1.5mm)
-}
-
 // =====================================================================
 // H · text on grid rows
 // =====================================================================
@@ -223,13 +238,13 @@
   let size = step * share / font-metrics.at(font).x
   let lift = size * font-metrics.at(font).desc + 0.1mm
   box(width: 100%, height: 2 * step + 0.01mm, {
-    place(dots(step: step, dot: dot-sizes.s, paint: ink(greys.mid)))
+    place(dots(step: step, dot: dot-sizes.s)) // the chosen grid dot (B2/B18)
     place(dx: step, dy: 2 * step - lift, text(font: font, size: size, top-edge: "baseline", bottom-edge: "baseline", body))
   })
 }
 #for s in (steps.standard, steps.weeks) {
   subhead[#step-name(s) step]
-  for font in (fonts.small, fonts.text, fonts.hand) {
+  for font in (fonts.text, fonts.hand) {
     for sh in shares {
       let size = s * sh / font-metrics.at(font).x
       grid(columns: (62mm, 1fr), align: bottom,
