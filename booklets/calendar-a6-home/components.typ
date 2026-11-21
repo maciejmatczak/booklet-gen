@@ -1,4 +1,4 @@
-// Components for calendar-a6: a day list on the library grid.
+// Components for calendar-a6-home: a day list on the library grid.
 //
 // Three layers, kept apart:
 //   paginate()       which days go on which page (dates only, no drawing)

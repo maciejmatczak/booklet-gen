@@ -7,7 +7,7 @@ Exploration of printable booklet templates built with Typst.
 ```bash
 mise install   # pinned tools: typst, tinymist, task, uv (see mise.toml)
 task setup     # everything else: Python env, fonts; safe to re-run
-task preview -- format-test-a6
+task preview -- format-test-a6-home
 task data      # regenerate data/ (after a new calendar export or a generator change)
 ```
 
@@ -44,14 +44,14 @@ components are composed, meaningful pieces built from them (week table, month ca
 Formats (`lib/formats.typ`) are named by purpose and how they're made: `a6-home` (A6 with home equipment),
 `a6-jott-insert` (an insert for a Jottbook). Their values are static, with a comment saying where each number comes from.
 
-Booklets are named `<content>-<format>`, leaving out a production suffix like `-home`: `calendar-a6`,
+Booklets are named `<content>-<format>`, with the full format name: `calendar-a6-home`,
 `format-test-a6-jott-insert`. Each booklet has one fixed format (size drives design); another format is a new booklet
 reusing the same components. Lowercase, hyphens. Settings such as the year or a layout variant are inputs, not names.
 
 ### General
 
 - Booklet choices come in as Typst inputs (`sys.inputs`, with defaults in `main.typ`):
-  `task build INPUTS="--input variant=bw" -- calendar-a6`.
+  `task build INPUTS="--input variant=bw" -- calendar-a6-home`.
 - Typst is always run with the repo root as `--root`, so imports use
   root-relative paths: `#import "/lib/lib.typ": *`, `json("/data/public/…")`.
 - Printing target: home duplex printer, A4 paper, folded booklets

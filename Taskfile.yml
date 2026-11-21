@@ -1,13 +1,13 @@
 version: "3"
 
-# Usage: task <name> -- <booklet>      e.g.  task preview -- calendar-a6
+# Usage: task <name> -- <booklet>      e.g.  task preview -- calendar-a6-home
 # The booklet name is the folder under booklets/.
 
 vars:
   BOOKLET: "{{.CLI_ARGS}}"
   SRC: "booklets/{{.CLI_ARGS}}/main.typ"
   OUT: "build/{{.CLI_ARGS}}"
-  # Optional booklet choices: task build INPUTS="--input variant=bw" -- calendar-a6
+  # Optional booklet choices: task build INPUTS="--input variant=bw" -- calendar-a6-home
   # (defined before TYPST_FLAGS: Task resolves vars in order)
   INPUTS: ""
   # Shared Typst flags: repo root for /lib, /data imports; fonts from task setup:fonts.
@@ -135,7 +135,7 @@ tasks:
     internal: true
     preconditions:
       - sh: '[ -n "{{.BOOKLET}}" ]'
-        msg: "Pass a booklet name after --, e.g.: task preview -- calendar-a6"
+        msg: "Pass a booklet name after --, e.g.: task preview -- calendar-a6-home"
       - sh: '[ -f "{{.SRC}}" ]'
         msg: "Not found: {{.SRC}}"
 

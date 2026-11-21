@@ -21,7 +21,7 @@ Small, agreed steps. Status: ✅ done · ⏭️ current · (blank) planned.
 - **One fixed format per booklet.** Size drives design decisions, so a booklet is not generated into several sizes.
   Small format changes (margins, dead zone, height) are absorbed by deriving values from the format; a new size is
   a new booklet that reuses (promoted) components and gets its own presets and print review. Booklets are named
-  `<content>-<size>`, e.g. `calendar-a6`. The year is a setting, not part of the name.
+  `<content>-<format>`, e.g. `calendar-a6-home`; formats are named by purpose and how they're made. The year is a setting, not part of the name.
 
 ## Phase 0 — Foundation
 
@@ -59,8 +59,8 @@ locally first (see README → Components).
 
 | #   | Step                                                          | Status |
 |-----|---------------------------------------------------------------|--------|
-| 3.1 | Choose the first booklet and sketch its spreads: `calendar-a6` (2027), a calendar-only day list for a weekly planner (mockups compared: week grid, weeks as columns, day lists, future log) | ✅ |
-| 3.2 | `booklets/calendar-a6/`: day list on the library grid, presets `b5` (5 mm, 2 rows a day) / `bw` (3.55 mm, 4 rows a day), paging `rolling` / `month`, chosen with `INPUTS="--input variant=… --input paging=…"`; holidays + observances from `day-info`, birthdays + name days from `day-family` printed in Caveat (handwriting) | ✅ |
+| 3.1 | Choose the first booklet and sketch its spreads: `calendar-a6-home` (2027), a calendar-only day list for a weekly planner (mockups compared: week grid, weeks as columns, day lists, future log) | ✅ |
+| 3.2 | `booklets/calendar-a6-home/`: day list on the library grid, presets `b5` (5 mm, 2 rows a day) / `bw` (3.55 mm, 4 rows a day), paging `rolling` / `month`, chosen with `INPUTS="--input variant=… --input paging=…"`; holidays + observances from `day-info`, birthdays + name days from `day-family` printed in Caveat (handwriting) | ✅ |
 | 3.3 | Print, fold, review, iterate (both presets; stipple density, label crowding, text on the grid) | ⏭️ |
 | 3.4 | Promote a component to `lib/components/` only when a second booklet needs it | later |
 

@@ -1,8 +1,8 @@
 // Calendar 2027: a day list for writing in, one row per day on the library grid.
 //
 // Choices (defaults below), from the command line:
-//   task build -- calendar-a6
-//   task build INPUTS="--input variant=bw --input paging=month" -- calendar-a6
+//   task build -- calendar-a6-home
+//   task build INPUTS="--input variant=bw --input paging=month" -- calendar-a6-home
 //   variant: b5 (5 mm grid, 2 rows a day) | bw (3.55 mm grid, 4 rows a day)
 //   paging:  rolling (days just continue) | month (each month starts a new spread)
 #import "/lib/lib.typ": *

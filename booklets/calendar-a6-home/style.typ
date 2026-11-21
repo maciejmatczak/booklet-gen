@@ -1,4 +1,4 @@
-// Booklet styles for calendar-a6, on top of /lib/style.typ.
+// Booklet styles for calendar-a6-home, on top of /lib/style.typ.
 #import "/lib/lib.typ": *
 
 // Day-list presets: the only place the variants differ. Everything else is derived

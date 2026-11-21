@@ -27,7 +27,7 @@ and binding limits become **physical margins** declared by the format (`lib/form
 ![One A4 side with 4 A6 pages, to scale](img/a4-sheet.svg)
 
 The diagram is generated from `lib/formats.typ` by `task docs`, so it always shows the current numbers.
-`booklets/format-test-a6` shows the same model on real pages, with rulers to measure the printer's dead zone.
+`booklets/format-test-a6-home` shows the same model on real pages, with rulers to measure the printer's dead zone.
 
 ### Minimum requirement
 
