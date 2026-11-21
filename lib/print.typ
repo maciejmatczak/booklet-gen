@@ -1,5 +1,5 @@
 // Entry document for `task print`: imposes a built booklet PDF onto A4 sheets.
-//   typst compile --root . --input pdf=/build/<name>.pdf --input pages=<n> --input format=<key> [--input printer=<key>] lib/print.typ out.pdf
+//   typst compile --root . --input pdf=/build/<name>.pdf --input pages=<n> --input format=<key> [--input printer=<key>] [--input order=reading] lib/print.typ out.pdf
 #import "impose.typ": impose
 #import "printers.typ": printers, default-printer
 #import "formats.typ": formats
@@ -17,4 +17,7 @@
 #let format-key = sys.inputs.at("format", default: "a6-home")
 #assert(format-key in formats, message: "unknown format '" + format-key + "', known: " + formats.keys().join(", "))
 
-#impose(read(pdf-path, encoding: none), int(pages), format: formats.at(format-key), printer: printer)
+// order: the format's layout by default; "reading" for uncut test sheets (pages in order, related pages together)
+#let order = sys.inputs.at("order", default: auto)
+
+#impose(read(pdf-path, encoding: none), int(pages), format: formats.at(format-key), printer: printer, order: order)

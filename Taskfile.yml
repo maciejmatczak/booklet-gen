@@ -12,6 +12,9 @@ vars:
   INPUTS: ""
   # Shared Typst flags: repo root for /lib, /data imports; fonts from task setup:fonts.
   TYPST_FLAGS: --root . --font-path fonts {{.INPUTS}}
+  # Output name: the booklet, plus its inputs when given, so variants don't overwrite each other:
+  #   INPUTS="--input style=modern" → build/running-list-a6-jott-insert-style-modern.pdf
+  NAME: '{{.CLI_ARGS}}{{if .INPUTS}}-{{.INPUTS | replace "--input " "" | trim | replace " " "-" | replace "=" "-"}}{{end}}'
 
 tasks:
   default:
@@ -153,14 +156,14 @@ tasks:
       - typst watch {{.TYPST_FLAGS}} --ppi 144 {{.SRC}} "{{.OUT}}/page-{0p}.png"
 
   build:
-    desc: Final PDF into build/<booklet>.pdf
+    desc: Final PDF into build/<booklet>[-<inputs>].pdf
     deps: [_require-booklet]
     cmds:
       - mkdir -p build
-      - typst compile {{.TYPST_FLAGS}} {{.SRC}} build/{{.BOOKLET}}.pdf
+      - typst compile {{.TYPST_FLAGS}} {{.SRC}} build/{{.NAME}}.pdf
 
   print:
-    desc: "Print-ready A4 sheets into build/<booklet>-print.pdf (print at 100%, duplex, flip on long edge)"
+    desc: "Print-ready A4 sheets into build/<booklet>[-<inputs>]-print.pdf (print at 100%, duplex, flip on long edge)"
     deps: [_require-booklet]
     vars:
       PAGES:
@@ -174,8 +177,19 @@ tasks:
         msg: "{{.SRC}} has no page count; does it use the booklet template (#show: booklet)?"
     cmds:
       - task: build
-      - typst compile {{.TYPST_FLAGS}} --input pdf=/build/{{.BOOKLET}}.pdf --input pages={{.PAGES}} --input format={{.FORMAT}} lib/print.typ build/{{.BOOKLET}}-print.pdf
-      - 'echo "→ build/{{.BOOKLET}}-print.pdf: {{.PAGES}} pages, {{.FORMAT}}. Print at 100%, duplex, flip on long edge. Cut, stack top halves on bottom halves, trim at crop ticks (if any), fold, nest."'
+      - typst compile {{.TYPST_FLAGS}} --input pdf=/build/{{.NAME}}.pdf --input pages={{.PAGES}} --input format={{.FORMAT}} lib/print.typ build/{{.NAME}}-print.pdf
+      - 'echo "→ build/{{.NAME}}-print.pdf: {{.PAGES}} pages, {{.FORMAT}}. Print at 100%, duplex, flip on long edge. Cut, stack top halves on bottom halves, trim at the trim ticks (if any), fold, nest."'
+
+  print:variants:
+    desc: "Print every variant a booklet lists in booklets/<booklet>/variants (one INPUTS line each), each to its own file"
+    deps: [_require-booklet]
+    vars:
+      VARIANTS:
+        sh: grep -v -e '^#' -e '^[[:space:]]*$' booklets/{{.BOOKLET}}/variants
+    cmds:
+      # a fresh `task` per variant: top-level vars (TYPST_FLAGS, NAME) are computed from INPUTS once per run
+      - for: { var: VARIANTS, split: "\n" }
+        cmd: task print INPUTS="{{.ITEM}}" -- {{.BOOKLET}}
 
   calibration:
     desc: "Duplex calibration sheet into build/duplex-calibration.pdf (raw printer: print at 100%, duplex, long edge)"

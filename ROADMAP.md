@@ -107,7 +107,19 @@ Output, one entry per day in the range (committed, so builds don't need Python):
 | 6.5 | Review its style on paper, fills first: the grey day-off column (`day-off-fill`; grey printed checkered in 2.8, so maybe a stipple, a rule or bold only), then dots, rules, date box, notes and names; set the choices in the booklet `theme` | |
 | 6.6 | Final print and bind | |
 
+## Phase 7 — Recurring chores (running-list-a6-jott-insert)
+
+Design and decisions: [booklets/running-list-a6-jott-insert/README.md](booklets/running-list-a6-jott-insert/README.md).
+
+| #   | Step                                                          | Status |
+|-----|---------------------------------------------------------------|--------|
+| 7.1 | Design (studio mockups): Alastair-style tracker, weekly (half a year per spread) + monthly (year per spread); styles classic / classic-lines / modern by role | ✅ |
+| 7.2 | Booklet + calibration sheet (`calibrate=true`); print order `order=reading` for uncut test sheets; variants to their own files (`task print:variants`); print marks: fold and trim ticks at both ends of each half, no horizontal trim ticks | ✅ |
+| 7.3 | Modern chosen on paper: name field 4 % fill, no contour; axis 20 % 0.2 pt to the spine edge; dot 0.24 mm black; month line 20 % 0.2 pt | ✅ |
+| 7.4 | Print test again; validate the vertical offset (one page came out shorter) | ⏭️ |
+
 ## Later / open
 
+- Weekly planner booklet, undated. Left page: habits, the week's plan, a dot area. Right page: not decided yet, only dots for now.
 - General name days (imieniny): skipped. There's no open dataset, and full lists are too long for an A6 day cell. Family name days come from 4.5.
 - CI that builds every booklet.

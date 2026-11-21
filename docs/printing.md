@@ -80,8 +80,8 @@ its spine: **85 × 148.5** (90 − 5 mm hinge room; half of A4 high, so top and 
 page. At the table:
 
 1. Cut in half, stack top halves on bottom halves (as for A6).
-2. **Trim both outer strips** at the crop ticks: short lines in the waste, near the top and bottom of each half,
-   ending on the trim line. They go away with the waste.
+2. **Trim both outer strips** at the trim ticks: short vertical lines on the trim line, at both ends of each
+   half (like the fold ticks). The only horizontal marks on the sheet are the cut ticks across the middle.
 3. **Punch the 4 outer corners** of each half-sheet (5 mm corner punch), one sheet at a time.
 4. Fold, nest, sew.
 

@@ -22,7 +22,7 @@
 
 // Cut and stack on A4: 2 × 2 cells (105 × 148.5), cut across the middle, fold each half.
 // Pages sit against the fold inside their cell; whatever is left at the outer side is
-// waste, trimmed off at crop ticks. Page order: impose.typ → cut-stack-order().
+// waste, trimmed off at the trim ticks. Page order: impose.typ → cut-stack-order().
 #let cut-stack-a4 = (
   name: "cut-stack-a4",
   sheet: a4,

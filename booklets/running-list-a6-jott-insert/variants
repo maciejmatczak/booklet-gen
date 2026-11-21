@@ -1,0 +1,4 @@
+# Variants printed by `task print:variants -- running-list-a6-jott-insert`, one INPUTS line each.
+# Each goes to its own file: build/running-list-a6-jott-insert-<inputs>-print.pdf
+--input style=classic
+--input style=modern
