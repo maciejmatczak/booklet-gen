@@ -1,4 +1,5 @@
-// Print specimen for the a6-jott-insert format: trim, punch and fit test.
+// Print specimen for the a6-jott-insert format: trim, punch, fold and fit test (physical checks only;
+// style choices are made on A4 with booklets/style-specimen-a4).
 // Shows the page model on every page: working area with the 5 mm dot grid, the corner
 // punch outline, and a ruler at the trimmed edge to check how accurate the cut was.
 // After printing: cut, trim at the crop ticks, punch the 4 outer corners, fold, put it in
@@ -94,7 +95,10 @@
     + Trim both outer strips at the crop ticks.
     + Read the trim rulers: how many ticks are left?
     + Punch the 4 outer corners: the dashed arcs show the cut.
-    + Fold, nest, and put it into the Jottbook, 5 mm from its spine.
+    + Fold, nest: pages 1–8 in order, backs upright (duplex)?
+    + SPINE labels sit at the fold on every page?
+    + Spread 4–5: does the dot grid continue across the fold?
+    + Put it into the Jottbook, 5 mm from its spine.
     + Does the book close nicely? Do the corners stay inside?
   ]
 ]

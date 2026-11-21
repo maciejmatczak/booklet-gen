@@ -51,6 +51,8 @@ Small, agreed steps. Status: ✅ done · ⏭️ current · (blank) planned.
 | 2.4 | `lib/lib.typ`: single entry point                                                      | ✅ |
 | 2.5 | `format-test` → 12-page print specimen: grid kinds/steps, dot sizes, lines/dashes/grey, tables, fonts, text on grid rows, spread across the fold | ✅ |
 | 2.6 | After printing the specimen: per-grid base text sizes (+ role sizes derived from them), grey yes/no | needs print (1.4); future work |
+| 2.7 | Specimen split: physical checks stay in `format-test-a6-jott-insert` (checklist + page order, spine, fold), `format-test-a6-home` dropped; style choices move to `style-specimen-a4`, one A4 sheet per decision (A write-on grid, B dots, C lines, D squares, E line weights, F faint tables, G fonts, H text on grid rows), every sample with a tick box, code and values; `greys` + `ink()` in `lib/style.typ`, `pen(…, grey:)` | ✅ |
+| 2.8 | Print `style-specimen-a4`, tick choices, set them in `lib/style.typ` / booklet themes | ⏭️ |
 
 ## Phase 3 — First real booklet
 

@@ -1,6 +1,7 @@
 // Shared style: a library of named options. Booklets pick and apply them.
 // Black toner only (laser printer): lightness comes from thinner lines, smaller dots and dashes,
-// or from grey, which the printer makes as a fine halftone (check it on paper).
+// or from grey (`greys`), which the printer makes as a fine halftone (check it on paper).
+// Choices are made on paper with booklets/style-specimen-a4.
 // Booklet-specific styles go in booklets/<name>/style.typ (a calendar keeps them in one `theme`).
 
 // ---- fonts, by role ----
@@ -54,8 +55,19 @@
   dashed: "dashed",
   loose-dotted: "loosely-dotted",
 )
-// A stroke from named options: pen("hairline"), pen("thin", dash: "dotted").
-#let pen(weight, dash: "solid") = (paint: black, thickness: weights.at(weight), dash: dashes.at(dash))
+// ---- grey ----
+// Ink share: 100 % is solid black, less is a laser halftone (lighter, finer; check on paper).
+#let greys = (
+  black: 100%,
+  dark: 70%,
+  mid: 50%,
+  light: 35%,
+)
+// Paint for an ink share: ink(50%) or ink(greys.mid).
+#let ink(share) = luma(100% - share)
+
+// A stroke from named options: pen("hairline"), pen("thin", dash: "dotted"), pen("thin", grey: "mid").
+#let pen(weight, dash: "solid", grey: "black") = (paint: ink(greys.at(grey)), thickness: weights.at(weight), dash: dashes.at(dash))
 
 // ---- grids ----
 #let steps = (
