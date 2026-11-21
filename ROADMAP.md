@@ -103,7 +103,9 @@ Output, one entry per day in the range (committed, so builds don't need Python):
 | 6.1 | Format `a6-jott-insert` (85 × 148.5, 5 mm punched corners, outer margin 3 mm) + specimen `format-test-a6-jott-insert` (trim rulers, punch outline, fit checklist) | ✅ |
 | 6.2 | Print, trim, punch, fold, test-fit in the Jottbook; adjust width / margins | ⏭️ |
 | 6.3 | First booklet on it: `calendar-a6-jott-insert`, the day list with the same options (`grid` 5mm / 3.55mm, `paging` rolling / month); title at 12 pt to fit 77 mm, the build fails if a title doesn't fit | ✅ |
-| 6.4 | Print, trim, punch, review the calendar in the Jottbook | ⏭️ |
+| 6.4 | Finish `calendar-a6-jott-insert` (`grid=3.55mm`): test print, cut, trim, punch, fold, put it in the Jottbook | |
+| 6.5 | Review its style on paper, fills first: the grey day-off column (`day-off-fill`; grey printed checkered in 2.8, so maybe a stipple, a rule or bold only), then dots, rules, date box, notes and names; set the choices in the booklet `theme` | |
+| 6.6 | Final print and bind | |
 
 ## Later / open
 
